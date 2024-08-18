@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "start": "nx serve",
+    "build": "nx build",
+    "watch": "nx build --watch --configuration development",
+    "test": "nx test",
     "serve:ssr:first-App": "node dist/first-app/server/server.mjs"
   },
   "private": true,
@@ -22,14 +22,20 @@
     "@angular/router": "^18.2.0",
     "@angular/ssr": "^18.2.0",
     "express": "^4.18.2",
+    "first-app": "file:",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.2.0",
+    "@angular-devkit/core": "^18.2.0",
+    "@angular-devkit/schematics": "^18.2.0",
     "@angular/cli": "^18.2.0",
     "@angular/compiler-cli": "^18.2.0",
+    "@nx/angular": "19.6.0",
+    "@nx/workspace": "19.6.0",
+    "@schematics/angular": "^18.2.0",
     "@types/express": "^4.17.17",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^18.18.0",
@@ -39,6 +45,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "nx": "19.6.0",
     "typescript": "~5.5.2"
   }
 }
