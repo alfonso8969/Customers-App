@@ -1,3 +1,10 @@
-@for(person of persons(); track person) {
-  <app-person-card [person]="person" (view)="view($event)" />
-  }
+
+<div class="mt-5">
+  <h1>Usuarios</h1>
+  <a href="/persons/new" class="btn btn-primary">Nuevo Usuario</a>
+
+  @for(person of persons(); track person) {
+    <app-person-card [person]="person" (view)="view($event)" />
+    }
+
+</div>
