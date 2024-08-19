@@ -1,0 +1,14 @@
+.container {
+  margin-top: 7rem;
+}
+
+.form-control {
+  width: 50%;
+  margin: 1rem;
+}
+
+.text-error {
+  color: red;
+  margin-top: 0.1rem;
+  font-size: smaller;
+}

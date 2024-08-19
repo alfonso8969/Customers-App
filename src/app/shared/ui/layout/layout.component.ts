@@ -10,8 +10,11 @@ import FooterComponent from './footer.component';
   imports: [RouterModule, NavbarComponent, FooterComponent],
   template: `
     <app-navbar />
-    <h1>Layout</h1>
-    <router-outlet />
+    <div class="container-fluid dsc-skeleton-content">
+        <router-outlet></router-outlet>
+    </div>
+
+
     <app-footer />
   `,
 })
