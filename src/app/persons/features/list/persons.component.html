@@ -1,0 +1,3 @@
+@for(person of persons(); track person) {
+  <app-person-card [person]="person" (view)="view($event)" />
+  }
