@@ -2,6 +2,10 @@
   margin-top: 7rem;
 }
 
+.card.container {
+  width: 50%;
+}
+
 .form-control {
   width: 50%;
   margin: 1rem;
@@ -11,4 +15,22 @@
   color: red;
   margin-top: 0.1rem;
   font-size: smaller;
+}
+
+.header {
+  color: aqua;
+}
+
+.new-amsterdam-regular {
+  font-family: "New Amsterdam", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.f-left {
+  float: left;
+}
+
+.f-right {
+  float: right;
 }

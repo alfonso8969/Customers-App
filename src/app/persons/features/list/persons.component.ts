@@ -20,8 +20,7 @@ export class PersonsComponent {
 
 
   view(person: Person) {
-    console.log(`The person name is ${person.name}`)
-    alert(`The person id is ${person.id}`)
+    console.log("The person: ", person)
     this.router.navigate(['/persons/person/', person.id]);
   }
 

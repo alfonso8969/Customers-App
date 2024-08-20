@@ -1,3 +1,15 @@
-c-7 {
-  margin-top: 2rem;
+.mt-6 {
+  margin-top: 6rem;
+}
+
+.f-left {
+  float: left;
+}
+
+.f-right {
+  float: right;
+}
+
+.btn-detail {
+  width: 10em;
 }

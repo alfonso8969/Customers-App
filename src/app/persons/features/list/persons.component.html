@@ -1,10 +1,16 @@
 
-<div class="mt-5">
-  <h1>Usuarios</h1>
-  <a href="/persons/new" class="btn btn-primary">Nuevo Usuario</a>
+<div class="container">
+  <div class="text-center">
+    <h1>Usuarios</h1>
+    <a href="/persons/new" class="btn btn-primary">Nuevo Usuario</a>
 
+  </div>
+  <div class="row">
   @for(person of persons(); track person) {
-    <app-person-card [person]="person" (view)="view($event)" />
-    }
+      <div class="col-4 col-lg-4">
+      <app-person-card [person]="person" (view)="view($event)" />
+    </div>
+  }
+</div>
 
 </div>

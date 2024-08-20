@@ -1,24 +1,41 @@
-import { Component, input, output } from '@angular/core';
-import { Person } from '../../data-access/person.service';
+import { Component, input, OnInit, output } from '@angular/core';
+import { Person } from '../../../class/person';
+
 
 @Component({
   selector: 'app-person-card',
   standalone: true,
   template: `
     <div class="container">
-      <h2>{{ person().name }}</h2>
+      <section class="mx-auto my-5" style="max-width: 23rem;">
 
-      <p>Phone {{ person().phone }}</p>
+        <div class="card testimonial-card mt-2 mb-3">
+          <div class="card-up aqua-gradient"></div>
+          <div class="avatar mx-auto white">
+            <img [src]="person().image" class="rounded-circle img-fluid"
+              alt="woman avatar">
+          </div>
+          <div class="card-body text-center">
+            <h4 class="card-title font-weight-bold">{{ person().name }}</h4>
 
-      <label for="address">Address</label>
-      <textarea id="address" rows="6" cols="30">{{ person().address }}</textarea>
-      <p></p>
+            <span class="fa fa-phone">  {{ person().phone }}</span>
+            <hr>
+            <p><i class="fas fa-home"></i> City: {{ person().address.city }}</p>
+          </div>
+          <div class="text-center mb-2">
+            <button class="btn btn-primary" (click)="viewPerson()">View</button>
+          </div>
+        </div>
 
-      <button (click)="viewPerson()">View</button>
-    </div>
+      </section>
+</div>
   `,
 })
-export default class PersonCardComponent {
+export default class PersonCardComponent implements OnInit {
+
+  ngOnInit(): void {
+
+  }
   person = input.required<Person>();
 
   view = output<Person>();
