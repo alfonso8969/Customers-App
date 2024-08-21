@@ -92,7 +92,34 @@ export class FormComponent implements OnInit {
 
   onSubmit() {
     if (this.personForm?.valid) {
-      let newPerson: Person = this.personForm.value;
+      if(this.edit) {
+        let updatedPerson: Person = this.personForm.value;
+        updatedPerson.id = Number(this.id);
+        this.personService.updatePerson(Number(this.id), updatedPerson).subscribe({
+          next: p => {
+            Swal.fire(
+              'Success!',
+              `Person ${p.name} updated successfully.`,
+             'success'
+            ).then(() => {
+              this.resetForm();
+              this.router.navigate(['/persons']);
+            });
+          },
+          error: err => {
+            console.error('Observable emitted an error: ' + err);
+            Swal.fire(
+              'Error!',
+              'An error occurred while updating the person.',
+              'error'
+            );
+          },
+          complete: () => console.log('Update person complete notification')
+        });
+
+
+      } else {
+        let newPerson: Person = this.personForm.value;
       newPerson.id = this.personService.getLastId() + 1;
       this.personService.addPerson(newPerson).subscribe({
         next: p => {
@@ -113,10 +140,9 @@ export class FormComponent implements OnInit {
             'error'
           );
         },
-        complete: () => console.log('Observable emitted the complete notification')
-
-
-    })
+        complete: () => console.log('Add new Person complete notification')
+      });
+      }
 
 
     } else {

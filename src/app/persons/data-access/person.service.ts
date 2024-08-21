@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Person } from '../../class/person';
 import { Address } from '../../class/address';
+import Swal from 'sweetalert2';
 
 
 const ADDRESS_MOCK: Address[] = [
@@ -71,21 +72,31 @@ let PERSONS_MOCK: Person[] = [
 @Injectable()
 export class PersonService {
 
-  newAddress: Address = {
-    street: '',
-    zipcode: '',
-    city: '',
-    country: '',
-    region: ''
-  };
+  private newAddress!: Address;
+  private createdUpdatedPerson!: Person;
 
-  newPerson: Person = {
-    id: 0,
-    name: '',
-    phone: '',
-    address: this.newAddress,
-    image: ''
+  constructor() {
+    this.createPerson();
   }
+
+  createPerson() {
+    this.newAddress = {
+      street: '',
+      zipcode: '',
+      city: '',
+      country: '',
+      region: ''
+    };
+
+    this.createdUpdatedPerson = {
+      id: 0,
+      name: '',
+      phone: '',
+      address: this.newAddress,
+      image: ''
+    }
+  }
+
 
   getPersons(): Observable<Person[]> {
     return of(PERSONS_MOCK);
@@ -96,19 +107,7 @@ export class PersonService {
   }
 
   addPerson(person: any): Observable<Person> {
-
-    this.newAddress.street = person.street;
-    this.newAddress.zipcode = person.zip;
-    this.newAddress.city = person.city;
-    this.newAddress.country = person.country;
-    this.newAddress.region = person.region;
-
-    this.newPerson.id = person.id;
-    this.newPerson.name = person.name;
-    this.newPerson.phone = person.phone;
-    this.newPerson.image = person.image
-
-    PERSONS_MOCK.push(this.newPerson);
+    PERSONS_MOCK.push(this.createUpdatePerson(person));
     return of(person);
   }
 
@@ -123,9 +122,38 @@ export class PersonService {
     return index !== -1;
   }
 
-  updatePerson(id: number, person: Person): Person {
-    PERSONS_MOCK = PERSONS_MOCK.map(p => p.id === id ? person : p);
-    return person;
+  updatePerson(id: number, person: any): Observable<Person> {
+    const index = PERSONS_MOCK.findIndex(item => item.id === id);
+    if (index !== -1) {
+
+      PERSONS_MOCK[index] = this.createUpdatePerson(person);
+    } else {
+      console.error(`Person with id ${id} not found.`);
+      Swal.fire({
+        title: 'Error',
+        text: 'Could not update person.',
+        icon: 'error',
+        confirmButtonText: 'Okay'
+      })
+    }  // Return the updated person to the caller.
+
+    return of(person);
+  }
+
+  createUpdatePerson(person: any): any {
+      this.createPerson();
+      this.newAddress.street = person.street;
+      this.newAddress.zipcode = person.zip;
+      this.newAddress.city = person.city;
+      this.newAddress.country = person.country;
+      this.newAddress.region = person.region;
+
+      this.createdUpdatedPerson.id = person.id;
+      this.createdUpdatedPerson.name = person.name;
+      this.createdUpdatedPerson.phone = person.phone;
+      this.createdUpdatedPerson.image = person.image
+
+    return this.createdUpdatedPerson;
   }
 
   getLastId() {

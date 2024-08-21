@@ -1,7 +1,7 @@
 <div class="container mt-6">
   <div class="card">
     <div class="card-header">
-      <h3 class="f-left">Person</h3>
+      <h3 class="f-left">{{ person()?.name | uppercase }} </h3>
       <a href="/persons" class="btn btn-primary f-right">Back</a>
     </div>
     <img [src]="person()?.image" alt="a person image" width="350" title="{{ person()?.name }}"/>
@@ -14,7 +14,7 @@
     </div>
     <div class="card-footer p-3">
       <button class="btn btn-primary f-left btn-detail" (click)="edit(person()?.id)">Edit</button>
-      <button class="btn btn-danger f-right btn-detail" (click)="delete(person()?.id)">Delete</button>
+      <button class="btn btn-danger f-right btn-detail" (click)="delete(person()!.id)">Delete</button>
 
   </div>
 </div>

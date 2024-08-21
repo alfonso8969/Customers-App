@@ -3,13 +3,13 @@ import { Component, inject, OnInit } from '@angular/core';
 import { PersonService } from '../../data-access/person.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import Swal from 'sweetalert2'
-import { JsonPipe } from '@angular/common';
+import { JsonPipe, UpperCasePipe } from '@angular/common';
 
 
 @Component({
   selector: 'app-person',
   standalone: true,
-  imports: [JsonPipe],
+  imports: [JsonPipe, UpperCasePipe],
   templateUrl: './person.component.html',
   styleUrls: ['./person.component.css']
 })
@@ -26,11 +26,11 @@ export class PersonComponent implements OnInit {
 
   ngOnInit() {
     this.address = "Street: " + this.person()?.address.street + "\n\tZip-Code: " + this.person()?.address.zipcode
-    + "\n\tCity: " + this.person()?.address.city +
-     "\n\tCountry: " + this.person()?.address.country + "\n\tRegion: " + this.person()?.address.region ;
+      + "\n\tCity: " + this.person()?.address.city +
+      "\n\tCountry: " + this.person()?.address.country + "\n\tRegion: " + this.person()?.address.region;
   }
 
-  delete(id: number | undefined) {
+  delete(id: number) {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -41,11 +41,19 @@ export class PersonComponent implements OnInit {
       confirmButtonText: "Yes, delete it!"
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success"
-        });
+        if (this.personService.deletePerson(id))
+          Swal.fire({
+            title: "Deleted!",
+            text: `Person ${this.person()?.name} has been deleted.`,
+            icon: "success"
+          });
+        else
+          Swal.fire({
+            title: "Error!",
+            text: "Failed to delete the person.",
+            icon: "error"
+          });
+        this.router.navigate(['/persons']);
       }
     });
   }
