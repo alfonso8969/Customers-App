@@ -92,7 +92,7 @@ export class FormComponent implements OnInit {
 
   onSubmit() {
     if (this.personForm?.valid) {
-      if(this.edit) {
+      if (this.edit) {
         let updatedPerson: Person = this.personForm.value;
         updatedPerson.id = Number(this.id);
         this.personService.updatePerson(Number(this.id), updatedPerson).subscribe({
@@ -100,7 +100,7 @@ export class FormComponent implements OnInit {
             Swal.fire(
               'Success!',
               `Person ${p.name} updated successfully.`,
-             'success'
+              'success'
             ).then(() => {
               this.resetForm();
               this.router.navigate(['/persons']);
@@ -120,28 +120,28 @@ export class FormComponent implements OnInit {
 
       } else {
         let newPerson: Person = this.personForm.value;
-      newPerson.id = this.personService.getLastId() + 1;
-      this.personService.addPerson(newPerson).subscribe({
-        next: p => {
-          Swal.fire(
-            'Success!',
-            `Person ${p.name} added successfully.`,
-            'success'
-          ).then(() => {
-            this.resetForm();
-            this.router.navigate(['/persons']);
-          });
-        },
-        error: err => {
-          console.error('Observable emitted an error: ' + err);
-          Swal.fire(
-            'Error!',
-            'An error occurred while adding the person.',
-            'error'
-          );
-        },
-        complete: () => console.log('Add new Person complete notification')
-      });
+        newPerson.id = this.personService.getLastId() + 1;
+        this.personService.addPerson(newPerson).subscribe({
+          next: p => {
+            Swal.fire(
+              'Success!',
+              `Person ${p.name} added successfully.`,
+              'success'
+            ).then(() => {
+              this.resetForm();
+              this.router.navigate(['/persons']);
+            });
+          },
+          error: err => {
+            console.error('Observable emitted an error: ' + err);
+            Swal.fire(
+              'Error!',
+              'An error occurred while adding the person.',
+              'error'
+            );
+          },
+          complete: () => console.log('Add new Person complete notification')
+        });
       }
 
 

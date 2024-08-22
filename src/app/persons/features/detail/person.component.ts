@@ -1,6 +1,6 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, inject, OnInit } from '@angular/core';
-import { PersonService } from '../../data-access/person.service';
+import { Component, inject, OnInit, Signal } from '@angular/core';
+import { Person, PersonService } from '../../data-access/person.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import Swal from 'sweetalert2'
 import { JsonPipe, UpperCasePipe } from '@angular/common';
@@ -16,18 +16,24 @@ import { JsonPipe, UpperCasePipe } from '@angular/common';
 export class PersonComponent implements OnInit {
   router = inject(Router)
   personService = inject(PersonService);
-  route = inject(ActivatedRoute)
   address: string | undefined = "";
+  id!: string;
+  person!: Signal<Person | undefined>;
 
-  constructor() { }
 
-  id = this.route.snapshot.paramMap.get('id');
-  person = toSignal(this.personService.getPerson(Number(this.id)));
+  constructor(private route: ActivatedRoute) {
+    this.id = this.route.snapshot.paramMap.get('id')!;
+    this.person = toSignal(this.personService.getPerson(Number(this.id)))!;
+   }
 
   ngOnInit() {
     this.address = "Street: " + this.person()?.address.street + "\n\tZip-Code: " + this.person()?.address.zipcode
       + "\n\tCity: " + this.person()?.address.city +
       "\n\tCountry: " + this.person()?.address.country + "\n\tRegion: " + this.person()?.address.region;
+  }
+
+  presupuesto(id: number|undefined) {
+    this.router.navigate(['/presupuestos/presupuesto/', id]);
   }
 
   delete(id: number) {
@@ -61,6 +67,4 @@ export class PersonComponent implements OnInit {
   edit(id: number | undefined) {
     this.router.navigate(['/persons/edit/', id]);
   }
-
-
 }

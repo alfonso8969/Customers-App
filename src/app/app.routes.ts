@@ -23,11 +23,16 @@ export const routes: Routes = [
         loadChildren: () => import('./persons/features/persons.routes'),
       },
       {
+        path: 'presupuestos',
+        loadChildren: () => import('./presupuesto/features/presupuesto.routes'),
+      },
+      {
         path: '**',
         redirectTo: 'dashboard',
       },
     ],
   },
+
   {
     path: '**',
     redirectTo: '',

@@ -1,4 +1,4 @@
-<div class="card container">
+<div class="card container background">
   <div class="card-header">
     <h1 *ngIf="!edit; else editPerson" class="header new-amsterdam-regula f-left">New Person</h1>
     <ng-template #editPerson> <h1 class="header new-amsterdam-regular f-left">Editando: {{ person()?.name }}</h1></ng-template>

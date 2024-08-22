@@ -2,8 +2,9 @@ import { Address } from "./address";
 
 
 export class Person {
-
-
+  
+  presupuestoId?: number; 
+  
   constructor(id: number, name: string, phone: string, address: Address, image?: string) {
     this.id = id;
     this.name = name;
@@ -11,15 +12,15 @@ export class Person {
     this.address = address;
     this.image = image;
   }
-
+  
   static fromJson(json: any): Person {
     return new Person(json.id, json.name, json.phone, json.address, json.image);
   }
-
+  
   get id(): number {
     return this.id;
   }
-
+  
   set id(value: number) {
     this.id = value;
   }

@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable , inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Person } from '../../class/person';
 import { Address } from '../../class/address';
+import { StorageService } from './storage.service';
 import Swal from 'sweetalert2';
 
 
@@ -71,6 +72,7 @@ let PERSONS_MOCK: Person[] = [
 
 @Injectable()
 export class PersonService {
+  storage = inject(StorageService);
 
   private newAddress!: Address;
   private createdUpdatedPerson!: Person;
@@ -89,6 +91,7 @@ export class PersonService {
     };
 
     this.createdUpdatedPerson = {
+      
       id: 0,
       name: '',
       phone: '',
@@ -99,34 +102,45 @@ export class PersonService {
 
 
   getPersons(): Observable<Person[]> {
+    let persons = this.storage.getPersonStorage();
+    if(persons.length !== 0) {
+      return of(persons);
+    }
+    this.storage.storagePersons(PERSONS_MOCK);
     return of(PERSONS_MOCK);
   }
 
   getPerson(id: number): Observable<Person | undefined> {
+    PERSONS_MOCK = this.storage.getPersonStorage();
     return of(PERSONS_MOCK.find(p => p.id === id));
   }
 
   addPerson(person: any): Observable<Person> {
+    PERSONS_MOCK = this.storage.getPersonStorage();
     PERSONS_MOCK.push(this.createUpdatePerson(person));
+    this.storage.storagePersons(PERSONS_MOCK);
     return of(person);
   }
 
   deletePerson(id: number): boolean {
+    PERSONS_MOCK = this.storage.getPersonStorage();
     const index = PERSONS_MOCK.findIndex(item => item.id === id);
 
     if (index !== -1) {
       // Remove the item at the found index
       PERSONS_MOCK.splice(index, 1);
     }
-
+    this.storage.storagePersons(PERSONS_MOCK);
     return index !== -1;
   }
 
   updatePerson(id: number, person: any): Observable<Person> {
+    PERSONS_MOCK = this.storage.getPersonStorage();
     const index = PERSONS_MOCK.findIndex(item => item.id === id);
     if (index !== -1) {
 
       PERSONS_MOCK[index] = this.createUpdatePerson(person);
+      this.storage.storagePersons(PERSONS_MOCK);
     } else {
       console.error(`Person with id ${id} not found.`);
       Swal.fire({
@@ -157,6 +171,7 @@ export class PersonService {
   }
 
   getLastId() {
+    PERSONS_MOCK = this.storage.getPersonStorage();
     return PERSONS_MOCK[PERSONS_MOCK.length - 1].id;
   }
 }
