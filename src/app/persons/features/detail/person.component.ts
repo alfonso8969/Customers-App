@@ -1,4 +1,4 @@
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { Component, inject, OnInit, Signal } from '@angular/core';
 import { Person, PersonService } from '../../data-access/person.service';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -24,7 +24,7 @@ export class PersonComponent implements OnInit {
   constructor(private route: ActivatedRoute) {
     this.id = this.route.snapshot.paramMap.get('id')!;
     this.person = toSignal(this.personService.getPerson(Number(this.id)))!;
-   }
+  }
 
   ngOnInit() {
     this.address = "Street: " + this.person()?.address.street + "\n\tZip-Code: " + this.person()?.address.zipcode
@@ -32,8 +32,52 @@ export class PersonComponent implements OnInit {
       "\n\tCountry: " + this.person()?.address.country + "\n\tRegion: " + this.person()?.address.region;
   }
 
-  presupuesto(id: number|undefined) {
-    this.router.navigate(['/presupuestos/presupuesto/', id]);
+  presupuesto(budgetId: number | undefined) {
+    if (budgetId && budgetId !== 0) {
+      this.navigateBudget(budgetId);
+    } else {
+      Swal.fire({
+        title: "Information!",
+        text: `The Customer ${this.person()?.name} don't have budget yet.\n
+        Do you want to create one now?`,
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          let lastBudgetId = this.personService.getLastBudgetId()!;
+          this.person()!.budgetId = lastBudgetId + 1;
+          if (this.person()?.budgetId)
+            this.personService.updatePersonBudget(this.person()?.id!, this.person()!)
+              .subscribe(p => {
+                if (p) {
+                  Swal.fire(
+                    'Success!',
+                    `Budget for ${p.name} created successfully.`,
+                    'success'
+                  ).then(() => {
+                    this.navigateBudget(p.budgetId);
+                  });
+                }
+              }
+            );
+        }
+      });
+    }
+  }
+
+
+  navigateBudget(budgetId: number | undefined) {
+    let navigationExtras: NavigationExtras = {
+      queryParams: {
+        budgetId: budgetId,
+        personId: this.person()?.id
+      }
+    };
+    this.router.navigate(['/presupuestos/presupuesto'], navigationExtras);
+
   }
 
   delete(id: number) {

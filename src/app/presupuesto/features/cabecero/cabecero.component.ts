@@ -1,46 +1,49 @@
-import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Component, inject, OnInit, Signal } from '@angular/core';
 import { FormularioComponent } from "../formulario/formulario.component";
 import { GastoComponent } from "../gastos/gasto.component";
 import { IngresoComponent } from "../ingreso/ingreso.component";
+import { Person } from '../../../class/person';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { PersonService } from '../../../persons/data-access/person.service';
+import { BudgetService } from '../../data-access/budget.service';
+import { Budget } from '../../../class/budget.model';
+import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-cabecero',
   standalone: true,
-  template: `
-    <div class="cabecero">
-      <div class="presupuesto">
-          <div class="presupuesto_titulo">
-              Presupuesto Disponible:
-          </div>
-          
-          <div class="presupuesto_valor">+ 2,345.64</div>
-          
-          <div class="presupuesto_ingreso limpiarEstilos">
-              <div class="presupuesto_ingreso--texto">Ingresos</div>
-              <div class="right">
-                  <div class="presupuesto_ingreso--valor">+ 4,300.00</div>
-                  <div class="presupuesto_ingreso--porcentaje">&nbsp;</div>
-              </div>
-          </div>
-          
-          <div class="presupuesto_egreso limpiarEstilos">
-              <div class="presupuesto_egreso--text">Gastos</div>
-              <div class="right limpiarEstilos">
-                  <div class="presupuesto_egreso--valor">- 1,954.36</div>
-                  <div class="presupuesto_egreso--porcentaje">45%</div>
-              </div>
-          </div>
-    </div>
-    </div>
-    <app-formulario />
-    <div class="contenedor limpiarEstilos">
-      <app-ingreso />
-      <app-gasto />
-    </div>
-  `,
+  templateUrl: './cabecero.component.html', // <app-cabecero></app
   styleUrl: './cabecero.component.css',
-  imports: [FormularioComponent, GastoComponent, IngresoComponent]
+  imports: [FormularioComponent, GastoComponent, IngresoComponent, CommonModule]
 })
-export class CabeceroComponent {
+export class CabeceroComponent implements OnInit{
+  personService = inject(PersonService);
+  budgetService = inject(BudgetService);
+
+  budgetId!: string;
+  personId!: string;
+  person!: Signal<Person | undefined>;
+  budget!: Signal<Budget | undefined>;
+  percent!: number;
+
+  constructor(private router: Router) {
+    this.budgetService.getBudgets();
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.queryParams) {
+      this.budgetId = navigation?.extras.queryParams['budgetId'];
+      this.personId = navigation?.extras.queryParams['personId'];
+    }
+    this.person = toSignal(this.personService.getPerson(Number(this.personId)));
+    this.budget = toSignal(this.budgetService.getBudget(Number(this.budgetId)));
+    this.percent = (this.budget()?.totalIncomes! / this.budget()?.totalExpenses!)
+
+
+
+
+  }
+  ngOnInit(): void {
+  }
 
 }

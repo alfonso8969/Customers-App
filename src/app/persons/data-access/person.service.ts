@@ -1,8 +1,9 @@
+import { Budget } from '../../class/budget.model';
 import { Injectable , inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Person } from '../../class/person';
 import { Address } from '../../class/address';
-import { StorageService } from './storage.service';
+import { StoragePersonService } from './storage.service';
 import Swal from 'sweetalert2';
 
 
@@ -39,6 +40,7 @@ const ADDRESS_MOCK: Address[] = [
 
 let PERSONS_MOCK: Person[] = [
   {
+    budgetId: 1,
     id: 1,
     name: 'Person 1',
     phone: "100754890",
@@ -46,6 +48,7 @@ let PERSONS_MOCK: Person[] = [
     image: "https://randomuser.me/api/portraits/men/4.jpg"
   },
   {
+    budgetId: 2,
     id: 2,
     name: 'Person 2',
     phone: "200754890",
@@ -53,6 +56,7 @@ let PERSONS_MOCK: Person[] = [
     image: "https://randomuser.me/api/portraits/men/60.jpg"
   },
   {
+    budgetId: 0,
     id: 3,
     name: 'Person 3',
     phone: "300754890",
@@ -60,6 +64,7 @@ let PERSONS_MOCK: Person[] = [
     image: "https://randomuser.me/api/portraits/women/4.jpg"
   },
   {
+    budgetId: 0,
     id: 4,
     name: "Person 4",
     phone: "400754890",
@@ -72,7 +77,7 @@ let PERSONS_MOCK: Person[] = [
 
 @Injectable()
 export class PersonService {
-  storage = inject(StorageService);
+  storage = inject(StoragePersonService);
 
   private newAddress!: Address;
   private createdUpdatedPerson!: Person;
@@ -91,7 +96,7 @@ export class PersonService {
     };
 
     this.createdUpdatedPerson = {
-      
+      budgetId: 0,
       id: 0,
       name: '',
       phone: '',
@@ -154,6 +159,27 @@ export class PersonService {
     return of(person);
   }
 
+  updatePersonBudget(budgetId: number, person: Person): Observable<Person> {
+    PERSONS_MOCK = this.storage.getPersonStorage();
+    const index = PERSONS_MOCK.findIndex(item => item.id === person.id);
+
+    if (index!== -1) {
+      PERSONS_MOCK[index].budgetId = budgetId;
+      this.storage.storagePersons(PERSONS_MOCK);
+    } else {
+      console.error(`Person with id ${person.id} not found.`);
+      Swal.fire({
+        title: 'Error',
+        text: 'Could not update person budget.',
+        icon: 'error',
+        confirmButtonText: 'Okay'
+      })
+    }  // Return the updated person to the caller.
+
+    return of(person);
+
+  }
+
   createUpdatePerson(person: any): any {
       this.createPerson();
       this.newAddress.street = person.street;
@@ -161,6 +187,10 @@ export class PersonService {
       this.newAddress.city = person.city;
       this.newAddress.country = person.country;
       this.newAddress.region = person.region;
+
+      if(person.budgetId) {
+        this.createdUpdatedPerson.budgetId = person.budgetId;
+      }
 
       this.createdUpdatedPerson.id = person.id;
       this.createdUpdatedPerson.name = person.name;
@@ -173,6 +203,12 @@ export class PersonService {
   getLastId() {
     PERSONS_MOCK = this.storage.getPersonStorage();
     return PERSONS_MOCK[PERSONS_MOCK.length - 1].id;
+  }
+
+  getLastBudgetId() {
+    PERSONS_MOCK = this.storage.getPersonStorage();
+    PERSONS_MOCK = PERSONS_MOCK.filter(p => p.budgetId !== 0);
+    return PERSONS_MOCK[PERSONS_MOCK.length - 1].budgetId;
   }
 }
 

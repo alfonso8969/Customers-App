@@ -2,9 +2,9 @@ import { Address } from "./address";
 
 
 export class Person {
-  
-  presupuestoId?: number; 
-  
+
+  private _budgetId?: number | undefined;
+
   constructor(id: number, name: string, phone: string, address: Address, image?: string) {
     this.id = id;
     this.name = name;
@@ -12,15 +12,23 @@ export class Person {
     this.address = address;
     this.image = image;
   }
-  
+
   static fromJson(json: any): Person {
     return new Person(json.id, json.name, json.phone, json.address, json.image);
   }
-  
+
+  get budgetId(): number | undefined {
+    return this._budgetId;
+  }
+
+  set budgetId(value: number | undefined) {
+    this._budgetId = value;
+  }
+
   get id(): number {
     return this.id;
   }
-  
+
   set id(value: number) {
     this.id = value;
   }

@@ -95,6 +95,7 @@ export class FormComponent implements OnInit {
       if (this.edit) {
         let updatedPerson: Person = this.personForm.value;
         updatedPerson.id = Number(this.id);
+        updatedPerson.budgetId = this.person()?.budgetId;
         this.personService.updatePerson(Number(this.id), updatedPerson).subscribe({
           next: p => {
             Swal.fire(
@@ -121,6 +122,7 @@ export class FormComponent implements OnInit {
       } else {
         let newPerson: Person = this.personForm.value;
         newPerson.id = this.personService.getLastId() + 1;
+        newPerson.budgetId = 0;
         this.personService.addPerson(newPerson).subscribe({
           next: p => {
             Swal.fire(

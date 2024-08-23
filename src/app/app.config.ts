@@ -5,7 +5,9 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { PersonService } from './persons/data-access/person.service';
-import { StorageService } from './persons/data-access/storage.service';
+import { StoragePersonService } from './persons/data-access/storage.service';
+import { StorageBudgetService } from './presupuesto/data-access/storage.service';
+import { BudgetService } from './presupuesto/data-access/budget.service';
 
 
 export const appConfig: ApplicationConfig = {
@@ -13,8 +15,11 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(),
-    StorageService,
     PersonService,
-    JsonPipe
+    StoragePersonService,
+    JsonPipe,
+    BudgetService,
+    StorageBudgetService
+
   ]
 };

@@ -16,7 +16,7 @@ import { Component } from '@angular/core';
           <a class="nav-link active" aria-current="page" href="#">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/persons">Persons</a>
+          <a class="nav-link" href="/persons">Customers</a>
         </li>
       </ul>
       <form class="d-flex" role="search">

@@ -1,3 +1,4 @@
+import { CabeceroComponent } from './presupuesto/features/cabecero/cabecero.component';
 import { Routes } from '@angular/router';
 import { privateGuard, publicGuard } from './core/guards/auth.guards';
 

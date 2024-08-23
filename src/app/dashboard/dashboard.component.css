@@ -1,0 +1,15 @@
+.background {
+  min-height: 800px !important;
+  width: 100%;
+  background: url('../../../public/assets/R.jpeg');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.dashboard {
+  font-family: "Gill Sans", sans-serif;
+  font-size: larger;
+  font-weight: bold;
+  color: orange;
+}
+
