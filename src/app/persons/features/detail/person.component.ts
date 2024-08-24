@@ -4,6 +4,8 @@ import { Person, PersonService } from '../../data-access/person.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import Swal from 'sweetalert2'
 import { JsonPipe, UpperCasePipe } from '@angular/common';
+import { Budget } from '../../../class/budget.model';
+import { StorageBudgetService } from '../../../presupuesto/data-access/storage.service';
 
 
 @Component({
@@ -16,6 +18,8 @@ import { JsonPipe, UpperCasePipe } from '@angular/common';
 export class PersonComponent implements OnInit {
   router = inject(Router)
   personService = inject(PersonService);
+  storageBudgetService = inject(StorageBudgetService)
+
   address: string | undefined = "";
   id!: string;
   person!: Signal<Person | undefined>;
@@ -58,6 +62,14 @@ export class PersonComponent implements OnInit {
                     `Budget for ${p.name} created successfully.`,
                     'success'
                   ).then(() => {
+                    let budget = new Budget();
+                    budget.budgetId = p.budgetId;
+                    budget.incomes = [];
+                    budget.expenses = [];
+                    budget.calculateTotalIncome();
+                    budget.calculateTotalExpenses();
+                    budget.calculateTotalBalance();
+                    this.storageBudgetService.storageBudget(budget);
                     this.navigateBudget(p.budgetId);
                   });
                 }

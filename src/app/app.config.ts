@@ -1,5 +1,5 @@
-import { JsonPipe } from '@angular/common';
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { JsonPipe, registerLocaleData } from '@angular/common';
+import { ApplicationConfig, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -8,6 +8,12 @@ import { PersonService } from './persons/data-access/person.service';
 import { StoragePersonService } from './persons/data-access/storage.service';
 import { StorageBudgetService } from './presupuesto/data-access/storage.service';
 import { BudgetService } from './presupuesto/data-access/budget.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { InputTextModule } from 'primeng/inputtext';
+import { TooltipModule } from 'primeng/tooltip';
+import { ButtonModule } from 'primeng/button';
+import localeEs from '@angular/common/locales/es';
+registerLocaleData(localeEs);
 
 
 export const appConfig: ApplicationConfig = {
@@ -19,7 +25,15 @@ export const appConfig: ApplicationConfig = {
     StoragePersonService,
     JsonPipe,
     BudgetService,
-    StorageBudgetService
+    StorageBudgetService,
+    InputTextModule,
+    TooltipModule,
+    ButtonModule,
+    BrowserAnimationsModule,
+    {
+      provide: LOCALE_ID,
+      useValue: 'es' // 'de-DE' for Germany, 'fr-FR' for France ...
+    },
 
   ]
 };

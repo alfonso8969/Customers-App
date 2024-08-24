@@ -16,8 +16,8 @@ export class BudgetService {
 
   budgets_mock: Budget[] = [];
 
-  budget1: Budget =  new Budget(1);
-  budget2: Budget =  new Budget(2);
+  budget1: Budget = new Budget(1);
+  budget2: Budget = new Budget(2);
 
   expense1Budget1: Spent = new Spent(
     'Gasto en comida',
@@ -95,8 +95,8 @@ export class BudgetService {
   }
 
   getBudgets(): Observable<Budget[]> {
-    let budgets = this.storage.getBudgetStorage();
-    if(budgets.length !== 0) {
+    let budgets = this.storage.getBudgetsStorage();
+    if (budgets.length !== 0) {
       return of(budgets);
     }
     this.storage.storageBudgets(this.budgets_mock);
@@ -104,24 +104,31 @@ export class BudgetService {
   }
 
   getBudget(budgetId: number): Observable<Budget | undefined> {
-    this.budgets_mock = this.storage.getBudgetStorage();
-    let budget =  this.budgets_mock.find(b => b.budgetId === budgetId);
+    this.budgets_mock = this.storage.getBudgetsStorage();
+    let budget = this.budgets_mock.find(b => b.budgetId === budgetId);
     return of(budget);
   }
 
   addBudget(budget: any): Observable<Budget> {
-    this.budgets_mock = this.storage.getBudgetStorage();
+    this.budgets_mock = this.storage.getBudgetsStorage();
     this.budgets_mock.push(this.createUpdatedBudget(budget));
     this.storage.storageBudgets(this.budgets_mock);
     return of(budget);
   }
 
-  createUpdatedBudget(budget: any): any {
-    throw new Error("Method not implemented.");
+  createUpdatedBudget(budget: Budget): Budget {
+    const newBudget = new Budget(budget.budgetId);
+    newBudget.incomes = budget.incomes;
+    newBudget.expenses = budget.expenses;
+    newBudget.calculateTotalIncome();
+    newBudget.calculateTotalExpenses();
+    newBudget.calculateTotalBalance();
+    return newBudget;
+
   }
 
   deleteBudget(id: number): boolean {
-    this.budgets_mock = this.storage.getBudgetStorage();
+    this.budgets_mock = this.storage.getBudgetsStorage();
     const index = this.budgets_mock.findIndex(item => item.budgetId === id);
 
     if (index !== -1) {
@@ -132,8 +139,44 @@ export class BudgetService {
     return index !== -1;
   }
 
+  deleteIncomeOfBudget(budgetId: number, incomeIndex: number): Observable<Budget> {
+    this.budgets_mock = this.storage.getBudgetsStorage();
+    let budget = this.budgets_mock.find(b => b.budgetId === budgetId)!;
+    if (budget) {
+      budget.incomes?.splice(incomeIndex, 1);
+      this.storage.storageBudgets(this.budgets_mock);
+    } else {
+      console.error(`Budget with id ${budgetId} not found.`);
+      Swal.fire({
+        title: 'Error',
+        text: 'Could not delete income.',
+        icon: 'error',
+        confirmButtonText: 'Okay'
+      })
+    }  // Return the updated person to the caller.
+    return of(budget!);
+  }
+
+  deleteSpentOfBudget(budgetId: number, spentIndex: number): Observable<Budget> {
+    this.budgets_mock = this.storage.getBudgetsStorage();
+    const budget = this.budgets_mock.find(b => b.budgetId === budgetId);
+    if (budget) {
+      budget.expenses?.splice(spentIndex, 1);
+      this.storage.storageBudgets(this.budgets_mock);
+    } else {
+      console.error(`Budget with id ${budgetId} not found.`);
+      Swal.fire({
+        title: 'Error',
+        text: 'Could not delete spent.',
+        icon: 'error',
+        confirmButtonText: 'Okay'
+      })
+    }  // Return the updated person to the caller.
+    return of(budget!);
+  }
+
   updateBudget(id: number, budget: any): Observable<Budget> {
-    this.budgets_mock = this.storage.getBudgetStorage();
+    this.budgets_mock = this.storage.getBudgetsStorage();
     const index = this.budgets_mock.findIndex(item => item.budgetId === id);
     if (index !== -1) {
 
