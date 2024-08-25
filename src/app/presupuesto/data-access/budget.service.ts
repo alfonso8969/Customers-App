@@ -195,4 +195,42 @@ export class BudgetService {
     return of(budget);
   }
 
+  addIncomeSpentToBudget(id: number, option: string, income: Income | undefined, spent: Spent | undefined): Observable<Budget> {
+    this.budgets_mock = this.storage.getBudgetsStorage();
+    let budget = this.budgets_mock.find(b => b.budgetId === id);
+
+    if (budget) {
+      budget = new Budget(budget.budgetId);
+      // Check if the income or spent object exists. If not, return an empty budget.
+      if (option === 'opInc') {
+        budget.incomes?.push(income!);
+      } else if (option ==='opSpe') {
+        budget.expenses?.push(spent!);
+      } else {
+        console.error(`Invalid option: ${option}`);
+        Swal.fire({
+          title: 'Error',
+          text: 'Invalid option for adding income or spent.',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
+      }
+      budget.calculateTotalIncome();
+      budget.calculateTotalExpenses();
+      budget.calculateTotalBalance();
+      this.storage.storageBudgets(this.budgets_mock);
+    } else {
+      console.error(`Budget with id ${id} not found.`);
+      Swal.fire({
+        title: 'Error',
+        text: `Could not add ${option = "opInc" ? "Income": "Spent"}.`,
+        icon: 'error',
+        confirmButtonText: 'Ok'
+      })
+    }
+
+    return budget ? of(budget) : of(new Budget());
+
+  }
+
 }

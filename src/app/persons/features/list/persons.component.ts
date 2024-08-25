@@ -3,6 +3,7 @@ import PersonCardComponent from '../../ui/person-card/person-card.component';
 import { Person, PersonService } from '../../data-access/person.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
+import { StoragePersonService } from '../../data-access/storage.service';
 
 @Component({
   selector: 'app-persons',
@@ -14,13 +15,15 @@ import { Router } from '@angular/router';
 export class PersonsComponent {
 
   personService = inject(PersonService)
+ storagePersonService = inject(StoragePersonService)
   router = inject(Router);
 
   persons = toSignal(this.personService.getPersons());
 
 
   view(person: Person) {
-    console.log("The person: ", person)
+    console.log("The person: ", person)<
+    this.storagePersonService.storagePerson(person);
     this.router.navigate(['/persons/person/', person.id]);
   }
 

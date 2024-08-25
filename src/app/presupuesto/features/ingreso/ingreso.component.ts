@@ -3,6 +3,7 @@ import { Income } from '../../../class/ingreso.model';
 import { BudgetService } from '../../data-access/budget.service';
 import { CommonModule } from '@angular/common';
 import { Budget } from '../../../class/budget.model';
+import { StorageBudgetService } from '../../data-access/storage.service';
 
 @Component({
   selector: 'app-ingreso',
@@ -13,25 +14,23 @@ import { Budget } from '../../../class/budget.model';
 })
 export class IngresoComponent implements OnInit {
 
-  @Input() budgetId!: string;
   incomes: Income[] = [];
   budget!: Budget;
 
-  constructor(private budgetService: BudgetService) {
+  constructor(private budgetService: BudgetService,
+              private storageBudgetService: StorageBudgetService) {
 
   }
   ngOnInit(): void {
-    this.budgetService.getBudget(Number(this.budgetId)).subscribe((budget) => {
-      if (budget) {
-        this.budget = budget;
-        this.incomes = budget.incomes || [];
-      }
+    this.storageBudgetService.getBudgetStorage().subscribe((budget) => {
+      this.budget = budget;
+      this.incomes = budget.incomes || [];
     });
   }
 
   deleteRecord(income: Income) {
     this.budgetService.deleteIncomeOfBudget(
-      Number(this.budgetId),
+      Number(this.budget.budgetId),
       this.incomes.indexOf(income)
     ).subscribe(
       (updatedBudget) => {

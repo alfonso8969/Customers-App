@@ -33,7 +33,6 @@ export const appConfig: ApplicationConfig = {
     {
       provide: LOCALE_ID,
       useValue: 'es' // 'de-DE' for Germany, 'fr-FR' for France ...
-    },
-
+    }
   ]
 };

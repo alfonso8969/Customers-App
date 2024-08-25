@@ -107,7 +107,7 @@ export class PersonService {
 
 
   getPersons(): Observable<Person[]> {
-    let persons = this.storage.getPersonStorage();
+    let persons = this.storage.getPersonsStorage();
     if(persons.length !== 0) {
       return of(persons);
     }
@@ -116,19 +116,19 @@ export class PersonService {
   }
 
   getPerson(id: number): Observable<Person | undefined> {
-    PERSONS_MOCK = this.storage.getPersonStorage();
+    PERSONS_MOCK = this.storage.getPersonsStorage();
     return of(PERSONS_MOCK.find(p => p.id === id));
   }
 
   addPerson(person: any): Observable<Person> {
-    PERSONS_MOCK = this.storage.getPersonStorage();
+    PERSONS_MOCK = this.storage.getPersonsStorage();
     PERSONS_MOCK.push(this.createUpdatePerson(person));
     this.storage.storagePersons(PERSONS_MOCK);
     return of(person);
   }
 
   deletePerson(id: number): boolean {
-    PERSONS_MOCK = this.storage.getPersonStorage();
+    PERSONS_MOCK = this.storage.getPersonsStorage();
     const index = PERSONS_MOCK.findIndex(item => item.id === id);
 
     if (index !== -1) {
@@ -140,7 +140,7 @@ export class PersonService {
   }
 
   updatePerson(id: number, person: any): Observable<Person> {
-    PERSONS_MOCK = this.storage.getPersonStorage();
+    PERSONS_MOCK = this.storage.getPersonsStorage();
     const index = PERSONS_MOCK.findIndex(item => item.id === id);
     if (index !== -1) {
 
@@ -160,7 +160,7 @@ export class PersonService {
   }
 
   updatePersonBudget(budgetId: number, person: Person): Observable<Person> {
-    PERSONS_MOCK = this.storage.getPersonStorage();
+    PERSONS_MOCK = this.storage.getPersonsStorage();
     const index = PERSONS_MOCK.findIndex(item => item.id === person.id);
 
     if (index!== -1) {
@@ -201,12 +201,12 @@ export class PersonService {
   }
 
   getLastId() {
-    PERSONS_MOCK = this.storage.getPersonStorage();
+    PERSONS_MOCK = this.storage.getPersonsStorage();
     return PERSONS_MOCK[PERSONS_MOCK.length - 1].id;
   }
 
   getLastBudgetId() {
-    PERSONS_MOCK = this.storage.getPersonStorage();
+    PERSONS_MOCK = this.storage.getPersonsStorage();
     PERSONS_MOCK = PERSONS_MOCK.filter(p => p.budgetId !== 0);
     return PERSONS_MOCK[PERSONS_MOCK.length - 1].budgetId;
   }

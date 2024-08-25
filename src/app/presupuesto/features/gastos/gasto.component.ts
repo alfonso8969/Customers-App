@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Budget } from '../../../class/budget.model';
 import { Income } from '../../../class/ingreso.model';
 import { BudgetService } from '../../data-access/budget.service';
@@ -15,37 +15,29 @@ import { ButtonModule } from 'primeng/button';
   styleUrl: './gasto.component.css',
   imports: [CommonModule, InputTextModule, ButtonModule]
 })
-export class GastoComponent {
+export class GastoComponent implements OnInit {
 
-  @Input() budgetId!: string;
   expenses: Spent[] = [];
   budget!: Budget;
 
 
-  constructor(private budgetService: BudgetService, private storageBudgetService: StorageBudgetService) {
+  constructor(private budgetService: BudgetService,
+              private storageBudgetService: StorageBudgetService) {
 
   }
   ngOnInit(): void {
-    if(this.budgetId) {
 
-      this.budgetService.getBudget(Number(this.budgetId)).subscribe((budget) => {
-        if (budget) {
-          this.budget = budget;
-          this.expenses = budget.expenses || [];
-        }
-      });
-    } else {
-      this.storageBudgetService.getBudgetStorage().subscribe((budget) => {
-        this.budget = budget;
-      });
+    this.storageBudgetService.getBudgetStorage().subscribe((budget) => {
+      this.budget = budget;
+      this.expenses = budget.expenses || [];
+    });
 
-    }
   }
 
 
   deleteRecord(spent: Spent) {
     this.budgetService.deleteSpentOfBudget(
-      Number(this.budgetId),
+      Number(this.budget.budgetId),
       this.expenses.indexOf(spent)
     ).subscribe(
       (updatedBudget) => {

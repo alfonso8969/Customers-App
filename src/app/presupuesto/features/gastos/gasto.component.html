@@ -1,23 +1,22 @@
 <div class="egreso">
-    <h2 class="egreso_titulo">Gastos</h2>
+  <h2 class="egreso_titulo">Gastos</h2>
 
 
-        <div *ngFor="let spent of expenses" class="elemento limpiarEstilos" >
-            <div class="elemento_descripcion">Fecha: {{ spent.date | date: 'shortDate' }} - {{ spent.description }} </div>
-            <div class="right limpiarEstilos">
-                <div class="elemento_valor">Cantidad: - {{ spent.quantity  | currency : 'EUR': 'symbol' : '1.2-2' }}</div>
-                <div class="elemento_porcentaje">{{ (budget.totalBalance! / spent.quantity) | number: '1.2-2' : 'es' }}%</div>
-                <div class="elemento_eliminar">
-                  <p-button class="elemento_eliminar--btn" (click)="deleteRecord(spent)"
+  <div *ngFor="let spent of expenses" class="elemento limpiarEstilos">
+    <div class="elemento_descripcion">Fecha: {{ spent.date | date: 'shortDate' }} - {{ spent.description }} </div>
+    <div class="right limpiarEstilos">
+      <div class="elemento_valor">Cantidad: - {{ spent.quantity | currency : 'EUR': 'symbol' : '1.2-2' }}</div>
+      <div class="elemento_porcentaje">{{ (100 * spent.quantity) / budget.totalBalance! | number: '1.2-2' : 'es' }}%</div>
+      <div class="elemento_eliminar">
+        <!--     <p-button class="elemento_eliminar--btn" (click)="deleteRecord(spent)"
                   pTooltip="Delete"
                   showDelay="1000"
                   hideDelay="300"
-                  ><i class="fa fa-times-circle"></i>Delete</p-button>
-                <!--     <button class="elemento_eliminar--btn" (click)="deleteRecord(spent)">
-                      <input type="text" pInputText pTooltip="Delete" tooltipPosition="right" placeholder="Delete" />
-                      <i class="fa fa-times-circle"></i>
-                    </button> -->
-                </div>
-            </div>
-        </div>
+                  ><i class="fa fa-times-circle"></i>Delete</p-button> -->
+        <button class="elemento_eliminar--btn" (click)="deleteRecord(spent)">
+          <i class="fa fa-times-circle"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

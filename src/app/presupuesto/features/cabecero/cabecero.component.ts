@@ -10,6 +10,7 @@ import { BudgetService } from '../../data-access/budget.service';
 import { Budget } from '../../../class/budget.model';
 import { CommonModule } from '@angular/common';
 import { StorageBudgetService } from '../../data-access/storage.service';
+import { StoragePersonService } from '../../../persons/data-access/storage.service';
 
 
 @Component({
@@ -23,6 +24,7 @@ export class CabeceroComponent implements OnInit {
   personService = inject(PersonService);
   budgetService = inject(BudgetService);
   budgetStorageService = inject(StorageBudgetService);
+  personStorageService = inject(StoragePersonService);
 
   budgetId!: string;
   personId!: string;
@@ -38,15 +40,20 @@ export class CabeceroComponent implements OnInit {
     if (navigation?.extras.queryParams) {
       this.budgetId = navigation?.extras.queryParams['budgetId'];
       this.personId = navigation?.extras.queryParams['personId'];
+      this.person = toSignal(this.personService.getPerson(Number(this.personId)));
+      this.budget = toSignal(this.budgetService.getBudget(Number(this.budgetId)));
+      this.percent = (100 * this.budget()?.totalExpenses!) / this.budget()?.totalIncomes!
     }
-    this.person = toSignal(this.personService.getPerson(Number(this.personId)));
-    this.budget = toSignal(this.budgetService.getBudget(Number(this.budgetId)));
-    if (this.budget()?.budgetId) {
+
+    if (this.budget && this.budget()?.budgetId) {
       this.budgetStorageService.storageBudget(this.budget()!)
     }
-    this.percent = (this.budget()?.totalIncomes! / this.budget()?.totalExpenses!)
 
-    if (this.budget()?.budgetId === null || this.budget()?.budgetId === undefined) {
+    if(this.person === undefined) {
+      this.person = toSignal(this.personStorageService.getPersonStorage());
+    }
+
+    if (this.budget === undefined) {
       this.budget = toSignal(this.budgetStorageService.getBudgetStorage());
     }
 
