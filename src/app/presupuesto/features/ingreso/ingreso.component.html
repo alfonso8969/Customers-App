@@ -1,0 +1,17 @@
+<div class="ingreso">
+    <h2 class="ingreso_titulo">Ingresos</h2>
+
+
+        <div *ngFor="let income of incomes" class="elemento limpiarEstilos">
+            <div class="elemento_descripcion">Fecha: {{ income.date | date: 'shortDate' }} - {{ income.description }}</div>
+            <div class="right limpiarEstilos">
+                <div class="elemento_valor">Cantidad: + {{ income.quantity | currency : 'EUR': 'symbol' : '1.2-2' }}</div>
+                <div class="elemento_eliminar">
+                    <button class="elemento_eliminar--btn" pInputText  pTooltip="Delete">
+                        <i class="fa fa-times-circle" (click)="deleteRecord(income)"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+</div>

@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "nx serve -o",
+    "nx": "nx reset",
+    "start": "nx serve",
     "build": "nx build",
     "watch": "nx build --watch --configuration development",
     "test": "nx test",
@@ -24,7 +25,9 @@
     "express": "^4.18.2",
     "first-app": "file:",
     "node": "^22.6.0",
+    "primeng": "^17.18.9",
     "rxjs": "~7.8.0",
+    "sweetalert2": "^11.6.13",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"
   },

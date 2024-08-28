@@ -1,3 +1,4 @@
+import { CabeceroComponent } from './presupuesto/features/cabecero/cabecero.component';
 import { Routes } from '@angular/router';
 import { privateGuard, publicGuard } from './core/guards/auth.guards';
 
@@ -23,11 +24,16 @@ export const routes: Routes = [
         loadChildren: () => import('./persons/features/persons.routes'),
       },
       {
+        path: 'presupuestos',
+        loadChildren: () => import('./presupuesto/features/presupuesto.routes'),
+      },
+      {
         path: '**',
         redirectTo: 'dashboard',
       },
     ],
   },
+
   {
     path: '**',
     redirectTo: '',
