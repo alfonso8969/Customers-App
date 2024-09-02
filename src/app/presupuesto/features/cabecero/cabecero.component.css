@@ -57,7 +57,7 @@ body {
 }
 
 .presupuesto_ingreso,
-.presupuesto_egreso {
+.presupuesto_gasto {
   padding: 12px;
   text-transform: uppercase;
 }
@@ -67,12 +67,12 @@ body {
   background-color: #28B9B5;
 }
 
-.presupuesto_egreso {
+.presupuesto_gasto {
   background-color: #FF5049;
 }
 
 .presupuesto_ingreso--texto,
-.presupuesto_egreso--text {
+.presupuesto_gasto--text {
   float: left;
   font-size: 13px;
   color: #444;
@@ -80,13 +80,13 @@ body {
 }
 
 .presupuesto_ingreso--valor,
-.presupuesto_egreso--valor {
+.presupuesto_gasto--valor {
   letter-spacing: 1px;
   float: left;
 }
 
 .presupuesto_ingreso--porcentaje,
-.presupuesto_egreso--porcentaje {
+.presupuesto_gasto--porcentaje {
   float: left;
   width: 34px;
   font-size: 11px;
@@ -94,7 +94,7 @@ body {
   margin-left: 10px;
 }
 
-.presupuesto_egreso--porcentaje {
+.presupuesto_gasto--porcentaje {
   background-color: rgba(255, 255, 255, 0.2);
   text-align: center;
   border-radius: 3px;

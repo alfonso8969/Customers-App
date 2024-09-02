@@ -5,32 +5,38 @@
           Presupuesto Disponible: {{ person()?.name }}
       </div>
 
-      <div *ngIf="budget()?.totalBalance! > 0" class="presupuesto_valor">+ {{ budget()?.totalBalance | currency : 'EUR': '€' : '1.2-2' }}</div>
-      <div *ngIf="budget()?.totalBalance! < 0" class="presupuesto_valor">- {{ budget()?.totalBalance | currency : 'EUR': '€' : '1.2-2' }}</div>
+      <div *ngIf="budget.totalBalance! > 0" class="presupuesto_valor">+ {{ budget.totalBalance | currency : 'EUR': '€' : '1.2-2' }}</div>
+      <div *ngIf="budget.totalBalance! < 0" class="presupuesto_valor">- {{ budget.totalBalance | currency : 'EUR': '€' : '1.2-2' }}</div>
 
       <div class="presupuesto_ingreso limpiarEstilos">
           <div class="presupuesto_ingreso--texto">Ingresos</div>
           <div class="right">
-              <div *ngIf="budget()?.totalIncomes! > 0" class="presupuesto_ingreso--valor">+ {{ budget()?.totalIncomes | currency : 'EUR': '€' : '1.2-2' }}</div>
-              <div *ngIf="budget()?.totalIncomes! === 0" class="presupuesto_ingreso--valor">{{ budget()?.totalIncomes | currency : 'EUR': '€' : '1.2-2' }}</div>
+              <div *ngIf="budget.totalIncomes! > 0" class="presupuesto_ingreso--valor">+ {{ budget.totalIncomes | currency : 'EUR': '€' : '1.2-2' }}</div>
+              <div *ngIf="budget.totalIncomes! === 0" class="presupuesto_ingreso--valor">{{ budget.totalIncomes | currency : 'EUR': '€' : '1.2-2' }}</div>
               <div class="presupuesto_ingreso--porcentaje">&nbsp;</div>
           </div>
       </div>
 
-      <div class="presupuesto_egreso limpiarEstilos">
-          <div class="presupuesto_egreso--text">Gastos</div>
+      <div class="presupuesto_gasto limpiarEstilos">
+          <div class="presupuesto_gasto--text">Gastos</div>
           <div class="right limpiarEstilos">
-              <div *ngIf="budget()?.totalExpenses! > 0"class="presupuesto_egreso--valor">- {{ budget()?.totalExpenses | currency : 'EUR': '€' : '1.2-2' }}</div>
-              <div *ngIf="budget()?.totalExpenses! === 0"class="presupuesto_egreso--valor">{{ budget()?.totalExpenses | currency : 'EUR': '€' : '1.2-2' }}</div>
-              <div *ngIf="budget()?.totalExpenses! !== 0" class="presupuesto_egreso--porcentaje"> {{ percent | number : '1.2-2' }}%</div>
+              <div *ngIf="budget.totalExpenses! > 0"class="presupuesto_gasto--valor">- {{ budget.totalExpenses | currency : 'EUR': '€' : '1.2-2' }}</div>
+              <div *ngIf="budget.totalExpenses! === 0"class="presupuesto_gasto--valor">{{ budget.totalExpenses | currency : 'EUR': '€' : '1.2-2' }}</div>
+              <div *ngIf="budget.totalExpenses! !== 0" class="presupuesto_gasto--porcentaje"> {{ percent | number : '1.2-2' }}%</div>
           </div>
       </div>
 </div>
 </div>
 <app-formulario />
 <div class="contenedor limpiarEstilos">
-  <app-ingreso>
-  </app-ingreso>
-  <app-gasto>
-  </app-gasto>
+  <div class="row">
+    <div class="col-sm-6">
+      <app-ingreso>
+      </app-ingreso>
+    </div>
+    <div class="col-sm-6">
+      <app-gasto>
+      </app-gasto>
+  </div>
+
 </div>

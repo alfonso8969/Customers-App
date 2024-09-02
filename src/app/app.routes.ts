@@ -1,4 +1,3 @@
-import { CabeceroComponent } from './presupuesto/features/cabecero/cabecero.component';
 import { Routes } from '@angular/router';
 import { privateGuard, publicGuard } from './core/guards/auth.guards';
 
@@ -36,6 +35,6 @@ export const routes: Routes = [
 
   {
     path: '**',
-    redirectTo: '',
+    loadComponent: () => import('./error/error.component').then(m => m.ErrorComponent),
   },
 ];

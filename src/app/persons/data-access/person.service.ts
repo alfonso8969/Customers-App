@@ -1,89 +1,24 @@
 import { Budget } from '../../class/budget.model';
-import { Injectable , inject } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Injectable, Signal, inject } from '@angular/core';
+import { map, Observable, of } from 'rxjs';
 import { Person } from '../../class/person';
 import { Address } from '../../class/address';
 import { StoragePersonService } from './storage.service';
 import Swal from 'sweetalert2';
+import { toSignal } from '@angular/core/rxjs-interop';
 
-
-const ADDRESS_MOCK: Address[] = [
-  {
-    street: 'Street 1',
-    zipcode: '12345',
-    city: 'City 1',
-    country: 'Country 1',
-    region: 'Region 1'
-  },
-  {
-    street: 'Street 2',
-    zipcode: '23456',
-    city: 'City 2',
-    country: 'Country 2',
-    region: 'Region 2'
-  },
-  {
-    street: 'Street 3',
-    zipcode: '34567',
-    city: 'City 3',
-    country: 'Country 3',
-    region: 'Region 3'
-  },
-  {
-    street: 'Street 4',
-    zipcode: '45678',
-    city: 'City 4',
-    country: 'Country 4',
-    region: 'Region 4'
-  }
-]
-
-let PERSONS_MOCK: Person[] = [
-  {
-    budgetId: 1,
-    id: 1,
-    name: 'Person 1',
-    phone: "100754890",
-    address: ADDRESS_MOCK[0],
-    image: "https://randomuser.me/api/portraits/men/4.jpg"
-  },
-  {
-    budgetId: 2,
-    id: 2,
-    name: 'Person 2',
-    phone: "200754890",
-    address: ADDRESS_MOCK[1],
-    image: "https://randomuser.me/api/portraits/men/60.jpg"
-  },
-  {
-    budgetId: 0,
-    id: 3,
-    name: 'Person 3',
-    phone: "300754890",
-    address: ADDRESS_MOCK[2],
-    image: "https://randomuser.me/api/portraits/women/4.jpg"
-  },
-  {
-    budgetId: 0,
-    id: 4,
-    name: "Person 4",
-    phone: "400754890",
-    address: ADDRESS_MOCK[3],
-    image: "https://randomuser.me/api/portraits/men/21.jpg"
-
-  }
-
-];
-
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class PersonService {
   storage = inject(StoragePersonService);
 
+  persons!: Signal<Person[] | undefined>;
   private newAddress!: Address;
   private createdUpdatedPerson!: Person;
 
   constructor() {
     this.createPerson();
+    const personsObservable = this.storage.getPersonsStorage();
+    this.persons = toSignal(personsObservable);
   }
 
   createPerson() {
@@ -107,45 +42,43 @@ export class PersonService {
 
 
   getPersons(): Observable<Person[]> {
-    let persons = this.storage.getPersonsStorage();
-    if(persons.length !== 0) {
-      return of(persons);
-    }
-    this.storage.storagePersons(PERSONS_MOCK);
-    return of(PERSONS_MOCK);
+    return this.storage.getPersonsStorage();
   }
 
   getPerson(id: number): Observable<Person | undefined> {
-    PERSONS_MOCK = this.storage.getPersonsStorage();
-    return of(PERSONS_MOCK.find(p => p.id === id));
+    return this.storage.getPersonsStorage()
+      .pipe(map(persons => persons.find(person => person.id === id)));
   }
 
   addPerson(person: any): Observable<Person> {
-    PERSONS_MOCK = this.storage.getPersonsStorage();
-    PERSONS_MOCK.push(this.createUpdatePerson(person));
-    this.storage.storagePersons(PERSONS_MOCK);
+    let personArray: Array<Person> = new Array<Person>();
+    if(this.persons()) {
+      this.persons()?.push(this.createUpdatePerson(person));
+    } else {
+      personArray.push(this.createUpdatePerson(person));
+    }
+    this.storage.storagePersons(this.persons() ?? personArray);
     return of(person);
   }
 
-  deletePerson(id: number): boolean {
-    PERSONS_MOCK = this.storage.getPersonsStorage();
-    const index = PERSONS_MOCK.findIndex(item => item.id === id);
-
+  deletePerson(id: number | undefined): boolean {
+    let index = this.persons()?.findIndex(item => item.id === id);
     if (index !== -1) {
       // Remove the item at the found index
-      PERSONS_MOCK.splice(index, 1);
+      this.persons()?.splice(index!, 1);
     }
-    this.storage.storagePersons(PERSONS_MOCK);
+    this.storage.storagePersons(this.persons()!);
     return index !== -1;
+
   }
 
   updatePerson(id: number, person: any): Observable<Person> {
-    PERSONS_MOCK = this.storage.getPersonsStorage();
-    const index = PERSONS_MOCK.findIndex(item => item.id === id);
+    let index = this.persons()?.findIndex(item => item.id === id);
     if (index !== -1) {
 
-      PERSONS_MOCK[index] = this.createUpdatePerson(person);
-      this.storage.storagePersons(PERSONS_MOCK);
+      this.persons()![index!] = this.createUpdatePerson(person);
+      this.storage.storagePersons(this.persons()!);
+      this.storage.storagePerson(this.persons()![index!]);
     } else {
       console.error(`Person with id ${id} not found.`);
       Swal.fire({
@@ -159,56 +92,43 @@ export class PersonService {
     return of(person);
   }
 
-  updatePersonBudget(budgetId: number, person: Person): Observable<Person> {
-    PERSONS_MOCK = this.storage.getPersonsStorage();
-    const index = PERSONS_MOCK.findIndex(item => item.id === person.id);
-
-    if (index!== -1) {
-      PERSONS_MOCK[index].budgetId = budgetId;
-      this.storage.storagePersons(PERSONS_MOCK);
-    } else {
-      console.error(`Person with id ${person.id} not found.`);
-      Swal.fire({
-        title: 'Error',
-        text: 'Could not update person budget.',
-        icon: 'error',
-        confirmButtonText: 'Okay'
-      })
-    }  // Return the updated person to the caller.
-
-    return of(person);
-
-  }
-
   createUpdatePerson(person: any): any {
-      this.createPerson();
+    this.createPerson();
+    if (person.address) {
+      this.newAddress.street = person.address.street;
+      this.newAddress.zipcode = person.address.zip;
+      this.newAddress.city = person.address.city;
+      this.newAddress.country = person.address.country;
+      this.newAddress.region = person.address.region;
+
+    } else {
       this.newAddress.street = person.street;
       this.newAddress.zipcode = person.zip;
       this.newAddress.city = person.city;
       this.newAddress.country = person.country;
       this.newAddress.region = person.region;
+    }
 
-      if(person.budgetId) {
-        this.createdUpdatedPerson.budgetId = person.budgetId;
-      }
+    if (person.budgetId) {
+      this.createdUpdatedPerson.budgetId = person.budgetId;
+    }
 
-      this.createdUpdatedPerson.id = person.id;
-      this.createdUpdatedPerson.name = person.name;
-      this.createdUpdatedPerson.phone = person.phone;
-      this.createdUpdatedPerson.image = person.image
+    this.createdUpdatedPerson.id = person.id;
+    this.createdUpdatedPerson.name = person.name;
+    this.createdUpdatedPerson.phone = person.phone;
+    this.createdUpdatedPerson.image = person.image
 
     return this.createdUpdatedPerson;
   }
 
-  getLastId() {
-    PERSONS_MOCK = this.storage.getPersonsStorage();
-    return PERSONS_MOCK[PERSONS_MOCK.length - 1].id;
+  getLastId(): number {
+    return this.persons() ? this.persons()![this.persons()!.length - 1].id : 1;
+
   }
 
   getLastBudgetId() {
-    PERSONS_MOCK = this.storage.getPersonsStorage();
-    PERSONS_MOCK = PERSONS_MOCK.filter(p => p.budgetId !== 0);
-    return PERSONS_MOCK[PERSONS_MOCK.length - 1].budgetId;
+    let persons = this.persons() ? this.persons()?.filter(p => p.budgetId !== 0) : new Array<Person>();
+    return persons?.length! > 0 ? persons![persons!.length - 1].budgetId : 0;
   }
 }
 

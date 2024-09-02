@@ -5,7 +5,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule, JsonPipe } from '@angular/common';
 import Swal from 'sweetalert2';
-import { Address } from '../../../class/address';
 
 @Component({
   selector: 'app-form',

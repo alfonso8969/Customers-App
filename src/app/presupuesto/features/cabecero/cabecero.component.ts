@@ -11,6 +11,8 @@ import { Budget } from '../../../class/budget.model';
 import { CommonModule } from '@angular/common';
 import { StorageBudgetService } from '../../data-access/storage.service';
 import { StoragePersonService } from '../../../persons/data-access/storage.service';
+import { of } from 'rxjs';
+import { Income } from '../../../class/ingreso.model';
 
 
 @Component({
@@ -23,38 +25,43 @@ import { StoragePersonService } from '../../../persons/data-access/storage.servi
 export class CabeceroComponent implements OnInit {
   personService = inject(PersonService);
   budgetService = inject(BudgetService);
-  budgetStorageService = inject(StorageBudgetService);
   personStorageService = inject(StoragePersonService);
+  budgetStorageService = inject(StorageBudgetService);
 
   budgetId!: string;
   personId!: string;
   person!: Signal<Person | undefined>;
-  budget!: Signal<Budget | undefined>;
   percent!: number;
-  budgetStorage: Budget = new Budget();
+  budget: Budget = new Budget();
 
 
   constructor(private router: Router) {
-    this.budgetService.getBudgets();
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.queryParams) {
       this.budgetId = navigation?.extras.queryParams['budgetId'];
       this.personId = navigation?.extras.queryParams['personId'];
       this.person = toSignal(this.personService.getPerson(Number(this.personId)));
-      this.budget = toSignal(this.budgetService.getBudget(Number(this.budgetId)));
-      this.percent = (100 * this.budget()?.totalExpenses!) / this.budget()?.totalIncomes!
+      this.budgetService.getBudget(Number(this.budgetId))
+        .subscribe(budget => {
+          this.budget = budget!;
+          if (budget!.incomes === undefined) {
+            this.budget.incomes = new Array<Income>();
+          }
+          if (budget!.expenses === undefined) {
+            this.budget.expenses = new Array<Income>();
+          }
+          this.percent = (100 * this.budget.totalExpenses!) / this.budget.totalIncomes!
+          this.budgetStorageService.storageLocalBudget(this.budget);
+        }
+        );
     }
 
-    if (this.budget && this.budget()?.budgetId) {
-      this.budgetStorageService.storageBudget(this.budget()!)
-    }
-
-    if(this.person === undefined) {
+    if (this.person === undefined) {
       this.person = toSignal(this.personStorageService.getPersonStorage());
     }
 
-    if (this.budget === undefined) {
-      this.budget = toSignal(this.budgetStorageService.getBudgetStorage());
+    if(this.budget.budgetId === undefined) {
+      this.budget = JSON.parse(window.localStorage.getItem('budget')!);
     }
 
   }

@@ -13,13 +13,11 @@ import { StoragePersonService } from '../../data-access/storage.service';
   styleUrls: ['./persons.component.css']
 })
 export class PersonsComponent {
-
   personService = inject(PersonService)
- storagePersonService = inject(StoragePersonService)
+  storagePersonService = inject(StoragePersonService)
   router = inject(Router);
 
   persons = toSignal(this.personService.getPersons());
-
 
   view(person: Person) {
     console.log("The person: ", person)<

@@ -6,6 +6,7 @@ import Swal from 'sweetalert2'
 import { JsonPipe, UpperCasePipe } from '@angular/common';
 import { Budget } from '../../../class/budget.model';
 import { StorageBudgetService } from '../../../presupuesto/data-access/storage.service';
+import { BudgetService } from '../../../presupuesto/data-access/budget.service';
 
 
 @Component({
@@ -18,81 +19,86 @@ import { StorageBudgetService } from '../../../presupuesto/data-access/storage.s
 export class PersonComponent implements OnInit {
   router = inject(Router)
   personService = inject(PersonService);
+  budgetService = inject(BudgetService)
   storageBudgetService = inject(StorageBudgetService)
 
   address: string | undefined = "";
   id!: string;
-  person!: Signal<Person | undefined>;
-
+  person!: Person | undefined;
 
   constructor(private route: ActivatedRoute) {
     this.id = this.route.snapshot.paramMap.get('id')!;
-    this.person = toSignal(this.personService.getPerson(Number(this.id)))!;
+    this.personService.getPerson(Number(this.id))
+    .subscribe(person => {
+      this.person = person;
+      this.address = "Street: " + this.person?.address.street + "\n\tZip-Code: " + this.person?.address.zipcode
+        + "\n\tCity: " + this.person?.address.city +
+        "\n\tCountry: " + this.person?.address.country + "\n\tRegion: " + this.person?.address.region;
+    })
   }
 
   ngOnInit() {
-    this.address = "Street: " + this.person()?.address.street + "\n\tZip-Code: " + this.person()?.address.zipcode
-      + "\n\tCity: " + this.person()?.address.city +
-      "\n\tCountry: " + this.person()?.address.country + "\n\tRegion: " + this.person()?.address.region;
   }
 
   presupuesto(budgetId: number | undefined) {
-    if (budgetId && budgetId !== 0) {
+    if (this.person && this.person?.budgetId !== 0) {
       this.navigateBudget(budgetId);
     } else {
       Swal.fire({
         title: "Information!",
-        text: `The Customer ${this.person()?.name} don't have budget yet.\n
+        text: `The Customer ${this.person?.name} don't have budget yet.\n
         Do you want to create one now?`,
         icon: "info",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes"
-      }).then((result) => {
+      }).then(result => {
         if (result.isConfirmed) {
           let lastBudgetId = this.personService.getLastBudgetId()!;
-          this.person()!.budgetId = lastBudgetId + 1;
-          if (this.person()?.budgetId)
-            this.personService.updatePersonBudget(this.person()?.id!, this.person()!)
-              .subscribe(p => {
-                if (p) {
-                  Swal.fire(
-                    'Success!',
-                    `Budget for ${p.name} created successfully.`,
-                    'success'
-                  ).then(() => {
-                    let budget = new Budget();
-                    budget.budgetId = p.budgetId;
-                    budget.incomes = [];
-                    budget.expenses = [];
-                    budget.calculateTotalIncome();
-                    budget.calculateTotalExpenses();
-                    budget.calculateTotalBalance();
-                    this.storageBudgetService.storageBudget(budget);
+          this.person!.budgetId = lastBudgetId + 1;
+          if (this.person?.budgetId) {
+            let budget = new Budget();
+            budget.budgetId = this.person?.budgetId;
+            budget.incomes = [];
+            budget.expenses = [];
+            budget.calculateTotalIncome();
+            budget.calculateTotalExpenses();
+            budget.calculateTotalBalance();
+
+            this.budgetService.addBudget(budget).subscribe(b => {
+              if(b.budgetId) {
+                this.personService.updatePerson(this.person?.id!, this.person)
+                 .subscribe(p => {
+                    if (p) {
+                      Swal.fire(
+                        'Success!',
+                        `Budget for ${this.person?.name} created successfully.`,
+                       'success'
+                      )
+                    }
                     this.navigateBudget(p.budgetId);
-                  });
-                }
+                  }
+                );
               }
-            );
+            })
+          }
         }
       });
     }
   }
 
-
   navigateBudget(budgetId: number | undefined) {
     let navigationExtras: NavigationExtras = {
       queryParams: {
         budgetId: budgetId,
-        personId: this.person()?.id
+        personId: this.person?.id
       }
     };
     this.router.navigate(['/presupuestos/presupuesto'], navigationExtras);
-
   }
 
-  delete(id: number) {
+  delete(id: number | undefined) {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -106,7 +112,7 @@ export class PersonComponent implements OnInit {
         if (this.personService.deletePerson(id))
           Swal.fire({
             title: "Deleted!",
-            text: `Person ${this.person()?.name} has been deleted.`,
+            text: `Person ${this.person?.name} has been deleted.`,
             icon: "success"
           });
         else
@@ -114,7 +120,7 @@ export class PersonComponent implements OnInit {
             title: "Error!",
             text: "Failed to delete the person.",
             icon: "error"
-          });
+          }).then();
         this.router.navigate(['/persons']);
       }
     });

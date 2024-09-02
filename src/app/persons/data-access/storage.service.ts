@@ -1,20 +1,26 @@
 import { Observable, of } from 'rxjs';
 import { Person } from '../../class/person'
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+
+@Injectable()
 export class StoragePersonService {
+  httpClient = inject(HttpClient)
   persons: Person[] = [];
   person!: Person;
+  url: string = "https://customers-987c4-default-rtdb.firebaseio.com/";
+  endPoint: string = "persons.json"
 
   constructor() {
 
   }
 
-  getPersonsStorage(): Person[] {
-    this.persons = JSON.parse(localStorage?.getItem('persons')!);
-    return this.persons ?? new Array<Person>();
+  getPersonsStorage(): Observable<Person[]> {
+    return this.httpClient.get<Person[]>(this.url + this.endPoint);
   }
 
   getPersonStorage(): Observable<Person> {
-    if(localStorage?.getItem('person')!== "undefined") {
+    if(localStorage?.getItem('person') !== "undefined") {
       this.person = JSON.parse(localStorage?.getItem('person')!);
     }
     return of(this.person) ?? new Person(
@@ -32,7 +38,15 @@ export class StoragePersonService {
   }
 
   storagePersons(persons: Person[]) {
-    localStorage?.setItem('persons', JSON.stringify(persons));
+    this.httpClient.put(this.url + this.endPoint, persons)
+    .subscribe({
+      next: data => {
+        console.log("result of save persons: ", data);
+      },
+      error: error => {
+        console.error('Error at save persons', error);
+      }
+    });
   }
 
   storagePerson(person: Person) {

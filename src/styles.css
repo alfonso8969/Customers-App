@@ -58,13 +58,13 @@
 
 .ingreso {
   float: left;
-  width: 475px;
-  margin-right: 50px;
+  width: 500px;
+  margin-right: 0px;
 }
 
-.egreso {
+.gasto {
   float: left;
-  width: 475px;
+  width: 500px;
 }
 
 h2 {
@@ -75,7 +75,7 @@ h2 {
 }
 
 .ingreso_titulo { color: #28B9B5; }
-.egreso_titulo { color: #FF5049; }
+.gasto_titulo { color: #FF5049; }
 
 .elemento {
   padding: 13px;
@@ -111,9 +111,9 @@ h2 {
   color: #28B9B5;
 }
 
-.egreso .elemento_valor,
-.egreso .elemento_porcentaje,
-.egreso .elemento_eliminar--btn {
+.gasto .elemento_valor,
+.gasto .elemento_porcentaje,
+.gasto .elemento_eliminar--btn {
   color: #FF5049;
 }
 
@@ -145,7 +145,6 @@ h2 {
   background-color: #FFDAD9 !important;
   cursor: pointer;
   color: #FF5049;
-
 }
 
 .no_pagado .elemento_porcentaje { box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1); }
