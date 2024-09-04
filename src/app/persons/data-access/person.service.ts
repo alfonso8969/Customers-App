@@ -1,15 +1,18 @@
 import { Budget } from '../../class/budget.model';
 import { Injectable, Signal, inject } from '@angular/core';
-import { map, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Person } from '../../class/person';
 import { Address } from '../../class/address';
 import { StoragePersonService } from './storage.service';
 import Swal from 'sweetalert2';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { BudgetService } from '../../presupuesto/data-access/budget.service';
+import { Rol } from '../../class/rol';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class PersonService {
   storage = inject(StoragePersonService);
+  budgetService = inject(BudgetService);
 
   persons!: Signal<Person[] | undefined>;
   private newAddress!: Address;
@@ -33,10 +36,13 @@ export class PersonService {
     this.createdUpdatedPerson = {
       budgetId: 0,
       id: 0,
+      username: '',
+      password: '',
       name: '',
       phone: '',
       address: this.newAddress,
-      image: ''
+      image: '',
+      rol: new Rol('user')
     }
   }
 
@@ -46,13 +52,12 @@ export class PersonService {
   }
 
   getPerson(id: number): Observable<Person | undefined> {
-    return this.storage.getPersonsStorage()
-      .pipe(map(persons => persons.find(person => person.id === id)));
+    return this.storage.getPersonStorage(id);
   }
 
   addPerson(person: any): Observable<Person> {
     let personArray: Array<Person> = new Array<Person>();
-    if(this.persons()) {
+    if (this.persons()) {
       this.persons()?.push(this.createUpdatePerson(person));
     } else {
       personArray.push(this.createUpdatePerson(person));
@@ -62,12 +67,14 @@ export class PersonService {
   }
 
   deletePerson(id: number | undefined): boolean {
+    let budgetId = this.persons()?.find(item => item.id === id)?.budgetId;
+    this.budgetService.deleteBudget(budgetId?? 0);
     let index = this.persons()?.findIndex(item => item.id === id);
     if (index !== -1) {
       // Remove the item at the found index
       this.persons()?.splice(index!, 1);
     }
-    this.storage.storagePersons(this.persons()!);
+    this.storage.deletePersonStorage(id);
     return index !== -1;
 
   }
@@ -77,8 +84,8 @@ export class PersonService {
     if (index !== -1) {
 
       this.persons()![index!] = this.createUpdatePerson(person);
-      this.storage.storagePersons(this.persons()!);
-      this.storage.storagePerson(this.persons()![index!]);
+      this.storage.updatePersonStorage(this.persons()![index!]);
+      this.storage.storageLocalPerson(this.persons()![index!]);
     } else {
       console.error(`Person with id ${id} not found.`);
       Swal.fire({
@@ -94,20 +101,12 @@ export class PersonService {
 
   createUpdatePerson(person: any): any {
     this.createPerson();
-    if (person.address) {
-      this.newAddress.street = person.address.street;
-      this.newAddress.zipcode = person.address.zip;
-      this.newAddress.city = person.address.city;
-      this.newAddress.country = person.address.country;
-      this.newAddress.region = person.address.region;
 
-    } else {
-      this.newAddress.street = person.street;
-      this.newAddress.zipcode = person.zip;
-      this.newAddress.city = person.city;
-      this.newAddress.country = person.country;
-      this.newAddress.region = person.region;
-    }
+    this.newAddress.street = person.street ?? person.address.street;
+    this.newAddress.zipcode = person.zip ?? person.address.zip;
+    this.newAddress.city = person.city ?? person.address.city;
+    this.newAddress.country = person.country ?? person.address.country;
+    this.newAddress.region = person.region ?? person.address.region;
 
     if (person.budgetId) {
       this.createdUpdatedPerson.budgetId = person.budgetId;
@@ -119,6 +118,10 @@ export class PersonService {
     this.createdUpdatedPerson.image = person.image
 
     return this.createdUpdatedPerson;
+  }
+
+  getLocalPerson(): Person {
+    return this.storage.getStorageLocalPerson();
   }
 
   getLastId(): number {

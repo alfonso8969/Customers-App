@@ -42,7 +42,21 @@ export class PersonComponent implements OnInit {
 
   presupuesto(budgetId: number | undefined) {
     if (this.person && this.person?.budgetId !== 0) {
-      this.navigateBudget(budgetId);
+      this.budgetService.getBudget(this.person?.budgetId!)
+      .subscribe(budget => {
+        if(budget) {
+          this.budgetService.setLocalBudget(budget);
+          this.navigateBudget(budget.budgetId!);
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: "Budget not found",
+            icon: "error",
+            confirmButtonText: "OK"
+          })
+        }
+      })
+
     } else {
       Swal.fire({
         title: "Information!",
@@ -75,11 +89,24 @@ export class PersonComponent implements OnInit {
                         'Success!',
                         `Budget for ${this.person?.name} created successfully.`,
                        'success'
-                      )
+                      ).then(()=> {
+                        this.navigateBudget(p.budgetId);
+                      })
+                    } else {
+                      Swal.fire(
+                        'Error!',
+                        `Error creating budget for ${this.person?.name}`,
+                        'error'
+                      ).then(()=> {})
                     }
-                    this.navigateBudget(p.budgetId);
                   }
                 );
+              } else {
+                Swal.fire(
+                  'Error!',
+                  `Error creating budget for ${this.person?.name}`,
+                  'error'
+                ).then(()=> {})
               }
             })
           }
@@ -114,6 +141,8 @@ export class PersonComponent implements OnInit {
             title: "Deleted!",
             text: `Person ${this.person?.name} has been deleted.`,
             icon: "success"
+          }).then(() => {
+            this.router.navigate(['/persons']);
           });
         else
           Swal.fire({
@@ -121,7 +150,7 @@ export class PersonComponent implements OnInit {
             text: "Failed to delete the person.",
             icon: "error"
           }).then();
-        this.router.navigate(['/persons']);
+
       }
     });
   }

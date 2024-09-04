@@ -1,18 +1,17 @@
 <div class="cabecero">
-  <a href="/persons/person/{{ person()?.id }}" class="btn btn-primary f-left">Back</a>
+  <a [routerLink]="['/persons/person/', person()?.id]" class="btn btn-primary f-left">Back</a>
   <div class="presupuesto">
       <div class="presupuesto_titulo">
           Presupuesto Disponible: {{ person()?.name }}
       </div>
 
-      <div *ngIf="budget.totalBalance! > 0" class="presupuesto_valor">+ {{ budget.totalBalance | currency : 'EUR': '€' : '1.2-2' }}</div>
-      <div *ngIf="budget.totalBalance! < 0" class="presupuesto_valor">- {{ budget.totalBalance | currency : 'EUR': '€' : '1.2-2' }}</div>
+      <div *ngIf="budget && budget.totalBalance" class="presupuesto_valor">{{ budget.totalBalance! > 0 ? '+' : '-' }}{{ budget.totalBalance | currency : 'EUR': '€' : '1.2-2' }}</div>
+
 
       <div class="presupuesto_ingreso limpiarEstilos">
           <div class="presupuesto_ingreso--texto">Ingresos</div>
           <div class="right">
-              <div *ngIf="budget.totalIncomes! > 0" class="presupuesto_ingreso--valor">+ {{ budget.totalIncomes | currency : 'EUR': '€' : '1.2-2' }}</div>
-              <div *ngIf="budget.totalIncomes! === 0" class="presupuesto_ingreso--valor">{{ budget.totalIncomes | currency : 'EUR': '€' : '1.2-2' }}</div>
+              <div *ngIf="budget && budget.totalIncomes" class="presupuesto_ingreso--valor">{{ budget.totalIncomes! > 0 ? '+' : '' }}{{ budget.totalIncomes | currency : 'EUR': '€' : '1.2-2' }}</div>
               <div class="presupuesto_ingreso--porcentaje">&nbsp;</div>
           </div>
       </div>
@@ -20,9 +19,8 @@
       <div class="presupuesto_gasto limpiarEstilos">
           <div class="presupuesto_gasto--text">Gastos</div>
           <div class="right limpiarEstilos">
-              <div *ngIf="budget.totalExpenses! > 0"class="presupuesto_gasto--valor">- {{ budget.totalExpenses | currency : 'EUR': '€' : '1.2-2' }}</div>
-              <div *ngIf="budget.totalExpenses! === 0"class="presupuesto_gasto--valor">{{ budget.totalExpenses | currency : 'EUR': '€' : '1.2-2' }}</div>
-              <div *ngIf="budget.totalExpenses! !== 0" class="presupuesto_gasto--porcentaje"> {{ percent | number : '1.2-2' }}%</div>
+              <div *ngIf="budget && budget.totalExpenses"class="presupuesto_gasto--valor">{{ budget.totalExpenses! < 0 ? '-' : '' }}{{ budget.totalExpenses | currency : 'EUR': '€' : '1.2-2' }}</div>
+              <div *ngIf="budget && budget.totalExpenses && budget.totalExpenses! !== 0" class="presupuesto_gasto--porcentaje"> {{ percent | number : '1.2-2' }}%</div>
           </div>
       </div>
 </div>

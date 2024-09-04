@@ -21,7 +21,7 @@ export class FormComponent implements OnInit {
 
   personForm: FormGroup;
 
-  person!: Signal<Person | undefined>;
+  person!: Person | undefined;
   edit: boolean = false;
   id = this.route.snapshot.paramMap.get('id');
   errors: string[] = [];
@@ -41,24 +41,28 @@ export class FormComponent implements OnInit {
 
 
     if (this.checkId(this.id)) {
-      this.person = toSignal(this.personService.getPerson(Number(this.id)));
-      this.edit = true;
-
-      this.formControls['name'].setValue(this.person()?.name);
-      this.formControls['phone'].setValue(this.person()?.phone);
-      this.formControls['street'].setValue(this.person()?.address.street);
-      this.formControls['zip'].setValue(this.person()?.address.zipcode);
-      this.formControls['city'].setValue(this.person()?.address.city);
-      this.formControls['region'].setValue(this.person()?.address.region);
-      this.formControls['country'].setValue(this.person()?.address.country);
-      this.formControls['image'].setValue(this.person()?.image);
-
-
+      this.personService.getPerson(Number(this.id))
+      .subscribe({
+        next: (person) => {
+          this.person = person;
+          this.edit = true;
+          this.formControls['name'].setValue(this.person?.name);
+          this.formControls['phone'].setValue(this.person?.phone);
+          this.formControls['street'].setValue(this.person?.address.street);
+          this.formControls['zip'].setValue(this.person?.address.zipcode);
+          this.formControls['city'].setValue(this.person?.address.city);
+          this.formControls['region'].setValue(this.person?.address.region);
+          this.formControls['country'].setValue(this.person?.address.country);
+          this.formControls['image'].setValue(this.person?.image);
+        },
+        error: (error) => {
+          console.error("Error fetching person:", error);
+        }
+      })
     } else {
       this.edit = false;
     }
   }
-
 
   get formControls() {
     return this.personForm?.controls;
@@ -94,7 +98,7 @@ export class FormComponent implements OnInit {
       if (this.edit) {
         let updatedPerson: Person = this.personForm.value;
         updatedPerson.id = Number(this.id);
-        updatedPerson.budgetId = this.person()?.budgetId;
+        updatedPerson.budgetId = this.person?.budgetId;
         this.personService.updatePerson(Number(this.id), updatedPerson).subscribe({
           next: p => {
             Swal.fire(

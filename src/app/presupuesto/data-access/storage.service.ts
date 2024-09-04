@@ -28,8 +28,16 @@ export class StorageBudgetService {
   }
 
   storageBudgets(budgets: Budget[]) {
-    this.httpClient.put<Budget[]>(this.url + this.endPoint, budgets)
-    .subscribe({
+    let url = this.url + this.endPoint;
+    let raw = JSON.stringify(budgets);
+    this.httpClient.put<Budget[]>(url, raw,
+      {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+        }),
+        observe:'body',
+        responseType: 'json'
+    }).subscribe({
       next: data => {
         console.log("result of save budgets: ", data);
       },
@@ -86,7 +94,11 @@ export class StorageBudgetService {
     localStorage?.setItem('budget', JSON.stringify(budget));
   }
 
-  getStorageLocalBudget(budget: Budget): Budget {
+  deleteStorageLocalBudget(): void {
+    localStorage?.removeItem('budget');
+  }
+
+  getStorageLocalBudget(): Budget {
     return JSON.parse(localStorage?.getItem('budget')!);
   }
 

@@ -1,6 +1,6 @@
+import { BudgetService } from './../../data-access/budget.service';
 import { Component, OnInit } from '@angular/core';
 import { Budget } from '../../../class/budget.model';
-import { BudgetService } from '../../data-access/budget.service';
 import { Spent } from '../../../class/gasto.model';
 import { CommonModule } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
@@ -22,14 +22,14 @@ export class GastoComponent implements OnInit {
   expenses: Spent[] = [];
   budget!: Budget | undefined;
   p: number = 1;
-  budgetId!: string;
+  budgetId!: number;
 
   constructor(private budgetService: BudgetService) {
   }
 
   ngOnInit(): void {
-    this.budgetId = JSON.parse(window.localStorage.getItem('budget')!)?.budgetId;
-    this.budgetService.getBudget(Number(this.budgetId))
+    this.budgetId = this.budgetService.getLocalBudget().budgetId!;
+    this.budgetService.getBudget(this.budgetId)
       .subscribe(budget => {
         this.budget = budget;
         this.expenses = this.budget?.expenses || new Array<Spent>();

@@ -169,4 +169,12 @@ export class BudgetService {
       return of(new Budget());
     }
   }
+
+  getLocalBudget(): Budget {
+    return this.storage.getStorageLocalBudget();
+  }
+
+  setLocalBudget(budget: Budget): void {
+    this.storage.storageLocalBudget(budget);
+  }
 }
