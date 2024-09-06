@@ -9,8 +9,7 @@ import { PersonService } from '../../../persons/data-access/person.service';
 import { BudgetService } from '../../data-access/budget.service';
 import { Budget } from '../../../class/budget.model';
 import { CommonModule } from '@angular/common';
-import { StorageBudgetService } from '../../data-access/storage.service';
-import { StoragePersonService } from '../../../persons/data-access/storage.service';
+import * as ls from 'local-storage';
 import { of } from 'rxjs';
 import { Income } from '../../../class/ingreso.model';
 
@@ -58,7 +57,7 @@ export class CabeceroComponent implements OnInit {
     }
 
     if (this.budget.budgetId === undefined) {
-      this.budget = JSON.parse(window.localStorage.getItem('budget')!);
+      this.budget = JSON.parse(ls.get('budget')!);
       this.setPercent(this.budget);
     }
 

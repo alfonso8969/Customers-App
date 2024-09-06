@@ -3,10 +3,12 @@ import { Routes } from '@angular/router';
 export default [
   {
     path: 'presupuesto/:budgetId',
-    loadComponent: () => import('./cabecero/cabecero.component').then(m => m.CabeceroComponent)
+    title: 'Presupuesto',
+    loadComponent: () => import('./cabecero/cabecero.component').then(m => m.CabeceroComponent),
   },
   {
     path: 'presupuesto',
+    title: 'Presupuesto',
     loadComponent: () => import('./cabecero/cabecero.component').then(m => m.CabeceroComponent)
   }
 ] as Routes;

@@ -7,7 +7,7 @@
 }
 
 .form-control {
-  width: 50%;
+  width: 70%;
   margin: 1rem;
 }
 
@@ -33,4 +33,22 @@
 
 .f-right {
   float: right;
+}
+
+.field-icon {
+  position: absolute;
+  right: 150px;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  color: rgba(0, 0, 0, 0.9);
+  cursor: pointer;
+}
+
+.field-icon.valid {
+  top: 24%;
+}
+
+.field-icon.invalid {
+  top: 26.3%;
 }

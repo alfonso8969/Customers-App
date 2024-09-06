@@ -3,7 +3,7 @@ import { Income } from '../../../class/ingreso.model';
 import { BudgetService } from '../../data-access/budget.service';
 import { CommonModule } from '@angular/common';
 import { Budget } from '../../../class/budget.model';
-import { StorageBudgetService } from '../../data-access/storage.service';
+import * as ls from 'local-storage';
 import Swal from 'sweetalert2';
 import { NgxPaginationModule } from 'ngx-pagination';
 
@@ -25,7 +25,7 @@ export class IngresoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.budgetId = JSON.parse(window.localStorage.getItem('budget')!)?.budgetId;
+    this.budgetId = JSON.parse(ls.get<string>('budget')!)?.budgetId;
     this.budgetService.getBudget(Number(this.budgetId))
       .subscribe(budget => {
         this.budget = budget;

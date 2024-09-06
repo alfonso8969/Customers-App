@@ -13,6 +13,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 import { ButtonModule } from 'primeng/button';
 import localeEs from '@angular/common/locales/es';
+import { LoginService } from './auth/data-access/login.service';
 registerLocaleData(localeEs);
 
 
@@ -26,13 +27,14 @@ export const appConfig: ApplicationConfig = {
     JsonPipe,
     BudgetService,
     StorageBudgetService,
+    LoginService,
     InputTextModule,
     TooltipModule,
     ButtonModule,
     BrowserAnimationsModule,
     {
       provide: LOCALE_ID,
-      useValue: 'es' // 'de-DE' for Germany, 'fr-FR' for France ...
+      useValue: 'es-ES' // 'de-DE' for Germany, 'fr-FR' for France ...
     }
   ]
 };

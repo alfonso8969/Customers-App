@@ -1,29 +1,41 @@
 import { Routes } from '@angular/router';
-import { privateGuard, publicGuard } from './core/guards/auth.guards';
+import { AuthGuard, privateGuard, publicGuard } from './core/guards/auth.guards';
 
 export const routes: Routes = [
   // rutas publicas
   {
     path: 'auth',
     canActivate: [publicGuard],
-    loadChildren: () => import('./auth/features/auth.routes'),
+    loadChildren: () => import('./auth/features/auth.routes')
   },
   // rutas privadas
   {
     path: '',
-    canActivate: [privateGuard],
     loadComponent: () => import('./shared/ui/layout/layout.component'),
     children: [
       {
         path: 'dashboard',
-        loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent),
+        canActivate: [publicGuard],
+        title: 'Dashboard',
+        data: { rol: ['ALL'] },
+        loadComponent: () =>
+          import('./dashboard/dashboard.component').then(
+            (m) => m.DashboardComponent
+          ),
+
       },
       {
         path: 'persons',
+        canActivate: [AuthGuard],
+        data: { rol: ['admin', 'user'] },
+        title: 'Personas',
         loadChildren: () => import('./persons/features/persons.routes'),
       },
       {
-        path: 'presupuestos',
+        path: 'budgets',
+        canActivate: [AuthGuard],
+        data: { rol: ['admin', 'user'] },
+        title: 'Presupuesto',
         loadChildren: () => import('./presupuesto/features/presupuesto.routes'),
       },
       {
@@ -35,6 +47,7 @@ export const routes: Routes = [
 
   {
     path: '**',
-    loadComponent: () => import('./error/error.component').then(m => m.ErrorComponent),
+    loadComponent: () =>
+      import('./error/error.component').then((m) => m.ErrorComponent),
   },
 ];

@@ -1,8 +1,7 @@
 import { Component, OnInit, Signal } from '@angular/core';
 import { BudgetService } from '../../data-access/budget.service';
-import { StorageBudgetService } from '../../data-access/storage.service';
 import { Budget } from '../../../class/budget.model';
-import { toSignal } from '@angular/core/rxjs-interop';
+import * as ls from 'local-storage';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Income } from '../../../class/ingreso.model';
 import { Spent } from '../../../class/gasto.model';
@@ -58,7 +57,7 @@ export class FormularioComponent implements OnInit {
   }
 
   createRecord() {
-    this.budget = JSON.parse(window.localStorage.getItem('budget')!);
+    this.budget = JSON.parse(ls.get('budget')!);
     if (this.operationForm?.valid) {
       if (this.typeOption === "opInc") {
         this.income = this.operationForm.value;

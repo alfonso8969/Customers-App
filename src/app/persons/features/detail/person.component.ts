@@ -122,7 +122,7 @@ export class PersonComponent implements OnInit {
         personId: this.person?.id
       }
     };
-    this.router.navigate(['/presupuestos/presupuesto'], navigationExtras);
+    this.router.navigate(['/budgets/presupuesto'], navigationExtras);
   }
 
   delete(id: number | undefined) {

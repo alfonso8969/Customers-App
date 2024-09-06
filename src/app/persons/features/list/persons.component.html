@@ -2,7 +2,7 @@
 <div class="container background">
   <div class="text-center">
     <h1>Customers</h1>
-    <a href="/persons/new" class="btn btn-primary">New Customer</a>
+    <a *ngIf="roleAs === 'admin'" href="/persons/new" class="btn btn-primary">New Customer</a>
 
   </div>
   <div class="row">

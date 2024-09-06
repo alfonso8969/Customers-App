@@ -13,16 +13,20 @@
         <div class="card-body">
           <h5 class="card-title"><span class="fa fa-user">  {{ person?.name }}</span></h5>
           <span class="fa fa-phone"><span class="card-text p-2">{{ person?.phone }}</span></span><p></p>
-          <textarea rows="6" cols="30" disabled>
-            {{ address }}
-          </textarea><p></p>
-          <button class="btn btn-primary" (click)="presupuesto(person?.budgetId)">Budget</button>
+          <div class="form-group">
+            <label for="text-address">Address</label>
+            <textarea id="text-address" rows="6" cols="30" disabled class="form-control w-50 text-center">
+                        {{ address }}
+                      </textarea>
+            <p></p>
+          </div>
+          <button type="button" class="btn btn-primary" (click)="presupuesto(person?.budgetId)">Budget</button>
         </div>
 
       </div>
     </div>
     <div class="card-footer p-3">
-      <button class="btn btn-primary f-left btn-detail" (click)="edit(person?.id)">Edit</button>
-      <button class="btn btn-danger f-right btn-detail" (click)="delete(person?.id)">Delete</button>
+      <button type="button" class="btn btn-primary f-left btn-detail" (click)="edit(person?.id)">Edit</button>
+      <button type="button" class="btn btn-danger f-right btn-detail" (click)="delete(person?.id)">Delete</button>
   </div>
 </div>

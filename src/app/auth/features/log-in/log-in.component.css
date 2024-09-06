@@ -46,6 +46,7 @@ html {
   font-family: sans-serif;
   line-height: 1.15;
   -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
@@ -276,6 +277,7 @@ button,
 [type="reset"],
 [type="submit"] {
   -webkit-appearance: button;
+  appearance: button;
 }
 
 button:not(:disabled),
@@ -305,6 +307,7 @@ input[type="time"],
 input[type="datetime-local"],
 input[type="month"] {
   -webkit-appearance: listbox;
+  appearance: listbox;
 }
 
 textarea {
@@ -343,6 +346,7 @@ progress {
 [type="search"] {
   outline-offset: -2px;
   -webkit-appearance: none;
+  appearance: none;
 }
 
 [type="search"]::-webkit-search-decoration {
@@ -11757,7 +11761,7 @@ h5,
 }
 
 .ftco-section {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(../../../../../public/assets/bg.jpg);
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(../../../../../public/assets/images/bg.jpg);
   border: 1px solid black;
   background-repeat: no-repeat;
   /* Do not repeat the image */
@@ -11819,6 +11823,7 @@ h5,
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
   color: rgba(0, 0, 0, 0.9);
+  cursor: pointer;
 }
 
 .form-control {
