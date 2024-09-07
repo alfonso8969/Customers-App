@@ -7,14 +7,17 @@ export default [
   },
   {
     path: 'person/:id',
-    loadComponent: () => import('./detail/person.component').then(m => m.PersonComponent)
+    title: 'Detalle',
+    loadComponent: () => import('./detail/person.component').then(m => m.PersonComponent),
   },
   {
     path: 'edit/:id',
+    title: 'Edición',
     loadComponent: () => import('./form/form.component').then(m => m.FormComponent)
   },
   {
     path: 'new',
+    title: 'Nuevo',
     loadComponent: () => import('./form/form.component').then(m => m.FormComponent)
   }
 ] as Routes;

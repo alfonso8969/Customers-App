@@ -1,11 +1,9 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, inject, OnInit, Signal } from '@angular/core';
 import { Person, PersonService } from '../../data-access/person.service';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule, JsonPipe } from '@angular/common';
 import Swal from 'sweetalert2';
-import { Address } from '../../../class/address';
 
 @Component({
   selector: 'app-form',
@@ -22,7 +20,7 @@ export class FormComponent implements OnInit {
 
   personForm: FormGroup;
 
-  person!: Signal<Person | undefined>;
+  person!: Person | undefined;
   edit: boolean = false;
   id = this.route.snapshot.paramMap.get('id');
   errors: string[] = [];
@@ -32,9 +30,11 @@ export class FormComponent implements OnInit {
       id: [''],
       name: ['', [Validators.required, Validators.minLength(2)]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]],
+      email: ['', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
+      password: ['', [Validators.required, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}')]],
       image: ['', Validators.required],
       street: ['', Validators.required],
-      zip: ['', Validators.required],
+      zipcode: ['', [Validators.required, Validators.pattern('^[0-9]{5}$')]],
       city: ['', Validators.required],
       country: ['', Validators.required],
       region: ['', Validators.required]
@@ -42,34 +42,40 @@ export class FormComponent implements OnInit {
 
 
     if (this.checkId(this.id)) {
-      this.person = toSignal(this.personService.getPerson(Number(this.id)));
-      this.edit = true;
-
-      this.formControls['name'].setValue(this.person()?.name);
-      this.formControls['phone'].setValue(this.person()?.phone);
-      this.formControls['street'].setValue(this.person()?.address.street);
-      this.formControls['zip'].setValue(this.person()?.address.zipcode);
-      this.formControls['city'].setValue(this.person()?.address.city);
-      this.formControls['region'].setValue(this.person()?.address.region);
-      this.formControls['country'].setValue(this.person()?.address.country);
-      this.formControls['image'].setValue(this.person()?.image);
-
-
+      this.personService.getPerson(Number(this.id))
+      .subscribe({
+        next: (person) => {
+          this.person = person;
+          this.edit = true;
+          this.formControls['name'].setValue(this.person?.name);
+          this.formControls['phone'].setValue(this.person?.phone);
+          this.formControls['email'].setValue(this.person?.email);
+          this.formControls['password'].setValue(this.person?.password);
+          this.formControls['street'].setValue(this.person?.address.street);
+          this.formControls['zipcode'].setValue(this.person?.address.zipcode);
+          this.formControls['city'].setValue(this.person?.address.city);
+          this.formControls['region'].setValue(this.person?.address.region);
+          this.formControls['country'].setValue(this.person?.address.country);
+          this.formControls['image'].setValue(this.person?.image);
+        },
+        error: (error) => {
+          console.error("Error fetching person:", error);
+        }
+      })
     } else {
       this.edit = false;
     }
   }
 
-
   get formControls() {
     return this.personForm?.controls;
   }
 
-  checkId(id: string | null) {
+  checkId(id: string | null): boolean {
     return id != null || id != undefined;
   }
 
-  resetForm() {
+  resetForm(): void {
     Object.keys(this.personForm.controls).forEach(key => {
       const control = this.personForm.get(key);
       console.log(`Key: ${key}, Value: ${control?.value}`);
@@ -77,7 +83,7 @@ export class FormComponent implements OnInit {
     });
   }
 
-  checkErrors() {
+  checkErrors(): string[] {
     this.errors = [];
     Object.keys(this.personForm.controls).forEach(key => {
       const control = this.personForm.get(key);
@@ -90,12 +96,12 @@ export class FormComponent implements OnInit {
     return this.errors;
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.personForm?.valid) {
       if (this.edit) {
         let updatedPerson: Person = this.personForm.value;
         updatedPerson.id = Number(this.id);
-        updatedPerson.budgetId = this.person()?.budgetId;
+        updatedPerson.budgetId = this.person?.budgetId;
         this.personService.updatePerson(Number(this.id), updatedPerson).subscribe({
           next: p => {
             Swal.fire(

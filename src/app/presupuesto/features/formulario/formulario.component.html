@@ -1,36 +1,40 @@
-<form>
+<form [formGroup]="operationForm" (ngSubmit)="createRecord()">
   <div class="agregar">
     <div class="agregar_contenedor">
-      <select
-        [ngClass]="{'redfocus': typeOption === 'opSpe'}"
-        (change)="option($event)"
-        class="agregar_tipo">
-        <option value="opInc" selected>+</option>
-        <option value="opSpe">-</option>
-      </select>
-      <input [ngClass]="{'redfocus': typeOption === 'opSpe'}"
-        type="text"
-        class="agregar_descripcion"
-        placeholder="Add Description"
-        required
-      >
+      <div class="row g-3 ml-25">
+        <div class="col-sm-2 d-flex justify-content-end">
+          <select [ngClass]="{'redfocus': typeOption === 'opSpe'}" (change)="option($event)" class="agregar_tipo">
+            <option value="opInc" selected>+</option>
+            <option value="opSpe">-</option>
+          </select>
+        </div>
+        <div class="col-sm-3">
+          <input [ngClass]="{'redfocus': typeOption === 'opSpe'}" type="text" class="agregar_descripcion"
+          placeholder="Add Description" formControlName="description" />
+          <div *ngIf="formControls['description'].invalid && (formControls['description'].dirty || formControls['description'].touched)">
+            <span class="text-danger description mt-3">La descripción es requerida</span>
+          </div>
+        </div>
 
-      <input [ngClass]="{'redfocus': typeOption === 'opSpe'}"
-        type="number"
-        class="agregar_valor"
-        placeholder="Valor"
-        required
-        min=1
-      >
-
-
-      <button type="submit" class="agregar_btn mb-3" [ngClass]="{'red': typeOption === 'opSpe'}">
-        <svg  xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512"><path fill="currentColor" d="M256 48C141.31 48 48 141.31 48 256s93.31 208 208 208s208-93.31 208-208S370.69 48 256 48m96 224h-80v80h-32v-80h-80v-32h80v-80h32v80h80Z"/></svg>
-      </button>
-      <div>
-        <span  class="text-danger description">La descripción es requerida</span>
-        <span  class="text-danger quantity">La cantidad es requerida</span>
+        <div class="col-sm-3">
+          <input [ngClass]="{'redfocus': typeOption === 'opSpe'}" type="number" class="agregar_valor"
+            placeholder="Valor" formControlName="quantity">
+            <button [disabled]="operationForm.invalid" type="submit" class="agregar_btn mb-2" [ngClass]="{'red': typeOption === 'opSpe'}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512">
+                <path fill="currentColor"
+                d="M256 48C141.31 48 48 141.31 48 256s93.31 208 208 208s208-93.31 208-208S370.69 48 256 48m96 224h-80v80h-32v-80h-80v-32h80v-80h32v80h80Z" />
+              </svg>
+            </button> <br>
+            <div *ngIf="formControls['quantity'].invalid && (formControls['quantity'].dirty || formControls['quantity'].touched)">
+              <span class="text-danger quantity" *ngIf="formControls['quantity'].errors?.['required']">La cantidad es requerida</span>
+            </div>
+            <div *ngIf="formControls['quantity'].invalid && (formControls['quantity'].dirty || formControls['quantity'].touched)">
+              <span class="text-danger quantity" *ngIf="formControls['quantity'].errors?.['min']">La cantidad debe ser mayor  que uno</span>
+            </div>
+        </div>
       </div>
+        <div>
+        </div>
     </div>
-  </div>
+    </div>
 </form>

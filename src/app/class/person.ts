@@ -1,9 +1,13 @@
 import { Address } from "./address";
+import { Rol } from "./rol";
 
 
 export class Person {
 
   private _budgetId?: number | undefined;
+  private _email?: string | undefined;
+  private _password?: string | undefined;
+  private _rol?: Rol | undefined;
 
   constructor(id: number, name: string, phone: string, address: Address, image?: string) {
     this.id = id;
@@ -15,6 +19,30 @@ export class Person {
 
   static fromJson(json: any): Person {
     return new Person(json.id, json.name, json.phone, json.address, json.image);
+  }
+
+  public get rol(): Rol | undefined {
+    return this._rol;
+  }
+
+  public set rol(value: Rol | undefined) {
+    this._rol = value;
+  }
+
+  public get password(): string | undefined {
+    return this._password;
+  }
+
+  public set password(value: string | undefined) {
+    this._password = value;
+  }
+
+  public get email(): string | undefined {
+    return this._email;
+  }
+
+  public set email(value: string | undefined) {
+    this._email = value;
   }
 
   get budgetId(): number | undefined {

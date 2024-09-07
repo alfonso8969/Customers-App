@@ -1,9 +1,11 @@
 <div class="card container background">
   <div class="card-header">
     <h1 *ngIf="!edit; else editPerson" class="header new-amsterdam-regula f-left">New Person</h1>
-    <ng-template #editPerson> <h1 class="header new-amsterdam-regular f-left">Editando: {{ person()?.name }}</h1></ng-template>
+    <ng-template #editPerson>
+      <h1 class="header new-amsterdam-regular f-left">Editando: {{ person?.name }}</h1>
+    </ng-template>
     <a *ngIf="!edit" href="/persons" class="btn btn-primary f-right mt-2">Back</a>
-    <a *ngIf="edit" href="/persons/person/{{ person()?.id }}" class="btn btn-primary f-right mt-2">Back</a>
+    <a *ngIf="edit" href="/persons/person/{{ person?.id }}" class="btn btn-primary f-right mt-2">Back</a>
   </div>
   <div class="card-body form-group">
     <form [formGroup]="personForm" (ngSubmit)="onSubmit()">
@@ -12,22 +14,56 @@
         <input id="id" formControlName="id" type="text" class="form-control">
       </div>
 
-      <div>
-        <label for="name">Name</label>
-        <input id="name" formControlName="name" type="text" class="form-control">
-        <div *ngIf="formControls['name'].invalid && (formControls['name'].dirty || formControls['name'].touched)">
-          <div class="text-error" *ngIf="formControls['name'].errors?.['required']">Name is required.</div>
-          <div class="text-error" *ngIf="formControls['name'].errors?.['minlength']">Name must be at least 2 characters
-            long.</div>
-        </div>
-      </div>
+      <div class="row">
+        <div class="col-6 col-sm-6">
+          <div>
+            <label for="name">Name</label>
+            <input id="name" formControlName="name" type="text" class="form-control">
+            <div *ngIf="formControls['name'].invalid && (formControls['name'].dirty || formControls['name'].touched)">
+              <div class="text-error" *ngIf="formControls['name'].errors?.['required']">Name is required.</div>
+              <div class="text-error" *ngIf="formControls['name'].errors?.['minlength']">Name must be at least 2 characters long.</div>
+            </div>
+          </div>
 
-      <div>
-        <label for="phone">Phone</label>
-        <input id="phone" formControlName="phone" type="text" class="form-control">
-        <div *ngIf="formControls['phone'].invalid && (formControls['phone'].dirty || formControls['phone'].touched)">
-          <div class="text-error" *ngIf="formControls['phone'].errors?.['required']">Phone is required.</div>
-          <div class="text-error" *ngIf="formControls['phone'].errors?.['pattern']">Phone must be a 9-digit number.
+          <div>
+            <label for="phone">Phone</label>
+            <input id="phone" formControlName="phone" type="" class="form-control">
+            <div
+              *ngIf="formControls['phone'].invalid && (formControls['phone'].dirty || formControls['phone'].touched)">
+              <div class="text-error" *ngIf="formControls['phone'].errors?.['required']">Phone is required.</div>
+              <div class="text-error" *ngIf="formControls['phone'].errors?.['pattern']">Phone must be a 9-digit number.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-sm-6">
+          <div>
+            <label for="email">Email</label>
+            <input id="email" type="text" class="form-control" formControlName="email">
+            <div
+              *ngIf="formControls['email'].invalid && (formControls['email'].dirty || formControls['email'].touched)">
+              <div *ngIf="formControls['email'].errors?.['required']" class="text-error">Email is required</div>
+              <div *ngIf="formControls['email'].errors?.['pattern']" class="text-error">Email invalid</div>
+            </div>
+          </div>
+          <div>
+            <div>
+              <label for="password-field">Password</label>
+              <input id="password-field" formControlName="password" type="password" class="form-control">
+              <span toggle="#password-field" [ngClass]="formControls['email'].invalid ? 'toggle-password invalid' : 'toggle-password valid'" class="fa fa-fw fa-eye field-icon "></span>
+            </div>
+            <div *ngIf="formControls['password'].invalid && formControls['password'].touched" class="text-error">
+              <div *ngIf="formControls['password'].errors?.['required']">Password is required</div>
+              <div *ngIf="formControls['password'].errors?.['pattern']" class="text-error">
+                <pre>
+    At least 8 characters in length
+    Lowercase letters
+    Uppercase letters
+    Numbers
+    Special characters
+                  </pre>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -55,18 +91,19 @@
             </div>
 
             <div class="col-4 col-sm-4">
-              <label for="zip">Zip</label>
-              <input id="zip" formControlName="zip" type="text" class="form-control w-75">
-              <div *ngIf="formControls['zip'].invalid && (formControls['zip'].dirty || formControls['zip'].touched)">
-                <div class="text-error" *ngIf="formControls['zip'].errors?.['required']">Zip is required.</div>
+              <label for="zipcode">Zip Code</label>
+              <input id="zipcode" formControlName="zipcode" type="text" class="form-control w-75">
+              <div *ngIf="formControls['zipcode'].invalid && (formControls['zipcode'].dirty || formControls['zipcode'].touched)">
+                <div class="text-error" *ngIf="formControls['zipcode'].errors?.['required']">Zip Code is required.</div>
+                <div class="text-error" *ngIf="formControls['zipcode'].errors?.['pattern']">Zip code is invalid.</div>
               </div>
             </div>
           </div>
 
           <div class="row">
             <div class="col-4 col-sm-4">
-              <label for="state">Country</label>
-              <input id="state" formControlName="country" type="text" class="form-control w-75">
+              <label for="country">Country</label>
+              <input id="country" formControlName="country" type="text" class="form-control w-75">
               <div
                 *ngIf="formControls['country'].invalid && (formControls['country'].dirty || formControls['country'].touched)">
                 <div class="text-error" *ngIf="formControls['country'].errors?.['required']">Country is required.
@@ -95,7 +132,7 @@
       </div>
 
       <div class="card-footer">
-<!--         {{ personForm.invalid }}
+        <!--         {{ personForm.invalid }}
         @for (error of checkErrors(); track error) {
           {{ error }}
         } -->

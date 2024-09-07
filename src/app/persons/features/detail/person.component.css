@@ -29,7 +29,7 @@
 }
 
 .card {
-  background: url(/assets/bg-pattern.png), #2196F3;
-  background: url(/assets/bg-pattern.png), -webkit-gradient(linear, right top, left top, from(#2196F3), to(#009688));
-  background: url(/assets/bg-pattern.png), linear-gradient(to left, #2196F3, #009688)
+  background: url(/assets/images/bg-pattern.png), #2196F3;
+  background: url(/assets/images/bg-pattern.png), -webkit-gradient(linear, right top, left top, from(#2196F3), to(#009688));
+  background: url(/assets/images/bg-pattern.png), linear-gradient(to left, #2196F3, #009688)
 }
