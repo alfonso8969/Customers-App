@@ -8,6 +8,7 @@ import * as ls from 'local-storage';
 @Injectable()
 export class StorageBudgetService {
   httpClient = inject(HttpClient);
+  
   budgets: Budget[] = [];
   budget!: Budget;
   url: string = 'https://customers-987c4-default-rtdb.firebaseio.com/';
@@ -17,17 +18,17 @@ export class StorageBudgetService {
   constructor(private loginService: LoginService) {}
 
   getBudgetsStorage(): Observable<Budget[]> {
-    return this.httpClient.get<Budget[]>(this.url + this.endPoint + '?auth=' + this.getToken());
+    return this.httpClient.get<Budget[]>(this.url + this.endPoint );
   }
 
   getBudgetStorage(budgetId: number): Observable<Budget> {
     return this.httpClient
-      .get<Budget[]>(this.url + this.endPoint + '?auth=' + this.getToken())
+      .get<Budget[]>(this.url + this.endPoint )
       .pipe(map((bs) => bs.find((b) => b.budgetId === budgetId)!));
   }
 
   storageBudgets(budgets: Budget[]) {
-    let url = this.url + this.endPoint + '?auth=' + this.getToken();
+    let url = this.url + this.endPoint ;
     let raw = JSON.stringify(budgets);
     this.httpClient
       .put<Budget[]>(url, raw, {
@@ -49,7 +50,7 @@ export class StorageBudgetService {
 
   deleteBudgetStorage(budgetId: number): Subscription {
     let index: number | string = budgetId! - 1;
-    let url: string = this.url + this.endPointDelUp + index + '.json' + '?auth=' + this.getToken();
+    let url: string = this.url + this.endPointDelUp + index + '.json' ;
     return this.httpClient
       .delete<Budget>(url, {
         headers: new HttpHeaders({
@@ -71,7 +72,7 @@ export class StorageBudgetService {
 
   updateBudgetStorage(budget: Budget): Subscription {
     let index: number | string = budget.budgetId! - 1;
-    let url: string = this.url + this.endPointDelUp + index + '.json' + '?auth=' + this.getToken();
+    let url: string = this.url + this.endPointDelUp + index + '.json' ;
     var raw = JSON.stringify(budget);
     return this.httpClient
       .put<Budget>(url, raw, {
@@ -118,9 +119,5 @@ export class StorageBudgetService {
     return throwError(() => {
       return errorMessage;
     });
-  }
-
-  getToken(): string {
-    return this.loginService.getToken();
   }
 }

@@ -1,8 +1,11 @@
 
-<div class="container background">
-  <div class="text-center">
-    <h1>Customers</h1>
-    <a *ngIf="roleAs === 'admin'" href="/persons/new" class="btn btn-primary">New Customer</a>
+<div class="container background mt-6">
+  <div class="text-center pt-4">
+    <h1>
+      <i class="fa fa-cog" aria-hidden="true"></i>
+      Customers
+    </h1>
+    <a *ngIf="roleAs === 'admin'" [routerLink]="['/persons/new']" class="btn btn-primary">New Customer</a>
 
   </div>
   <div class="row">

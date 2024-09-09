@@ -17,19 +17,19 @@ export class StoragePersonService {
 
   getPersonsStorage(): Observable<Person[]> {
     return this.httpClient.get<Person[]>(
-      this.url + this.endPoint + '?auth=' + this.getToken()
+      this.url + this.endPoint
     );
   }
 
   getPersonStorage(id: number): Observable<Person> {
     return this.httpClient
-      .get<Person[]>(this.url + this.endPoint + '?auth=' + this.getToken())
+      .get<Person[]>(this.url + this.endPoint )
       .pipe(map((ps) => ps.find((p) => p.id === id)!));
   }
 
   storagePersons(persons: Person[]) {
     this.httpClient
-      .put(this.url + this.endPoint + '?auth=' + this.getToken(), persons)
+      .put(this.url + this.endPoint , persons)
       .subscribe({
         next: (data) => {
           console.log('result of save persons: ', data);
@@ -43,7 +43,7 @@ export class StoragePersonService {
   deletePersonStorage(id: number | undefined): Subscription {
     let index: number | string = id! - 1;
     let url: string =
-      this.url + this.endPointDelUp + index + '.json?auth=' + this.getToken();
+      this.url + this.endPointDelUp + index + '.json';
     return this.httpClient
       .delete(url, {
         headers: new HttpHeaders({
@@ -66,7 +66,7 @@ export class StoragePersonService {
   updatePersonStorage(person: Person): Subscription {
     let index: number | string = person.id! - 1;
     let url: string =
-      this.url + this.endPointDelUp + index + '.json?auth=' + this.getToken();
+      this.url + this.endPointDelUp + index + '.json';
     var raw = JSON.stringify(person);
     return this.httpClient
       .put(url, raw, {
@@ -88,7 +88,7 @@ export class StoragePersonService {
   }
 
   storageLocalPerson(person: Person) {
-    ls.set<string>('person', JSON.stringify(person));
+    ls.set<Person>('person', person);
   }
 
   deleteLocalStoragePerson() {
@@ -96,11 +96,11 @@ export class StoragePersonService {
   }
 
   getStorageLocalPerson(): Person {
-    return JSON.parse(ls.get('person')!);
+    return ls.get<Person>('person')!;
   }
 
   getToken() {
-    return ls.get('token') ?? '';
+    return ls.get<string>('token') ?? '';
   }
 
   // Error handling

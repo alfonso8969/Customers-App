@@ -3,7 +3,6 @@ import { LoginService } from '../../auth/data-access/login.service';
 import { inject, Injectable } from '@angular/core';
 import { Person } from '../../class/person';
 import { PersonService } from '../../persons/data-access/person.service';
-import { Rol } from '../../class/rol';
 import Swal from 'sweetalert2';
 import { Roles } from '../../class/roles';
 
@@ -52,7 +51,7 @@ export class AuthGuard implements CanActivate {
    * ActivatedRouteSnapshot también se puede usar para atravesar el árbol de estado del enrutador.
    * @param {any} url La url de donde proviene la petición
    */
-  isL(route: ActivatedRouteSnapshot, url: any): any {
+  isL(route: ActivatedRouteSnapshot, url: any): boolean {
     if (this.loginService.isAuthenticated()) {
       this.user = this.userService.getUserLogged();
       const userRol = this.loginService.gR();
@@ -78,11 +77,15 @@ export class AuthGuard implements CanActivate {
           this.router.navigateByUrl(url);
           return false;
         }
+      } else {
+        console.log(roles);
+        this.router.navigate(['/dashboard']);
+        return true;
       }
-      return true;
+    } else {
+      console.log('no hay token');
+      this.router.navigate(['auth/login']);
+      return false;
     }
-    console.log('no estoy logueado');
-    this.router.navigate(['/auth/login']);
-    return false;
   }
 }

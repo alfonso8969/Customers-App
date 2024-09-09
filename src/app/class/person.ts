@@ -3,15 +3,22 @@ import { Rol } from "./rol";
 
 
 export class Person {
-
   private _budgetId?: number | undefined;
   private _email?: string | undefined;
   private _password?: string | undefined;
   private _rol?: Rol | undefined;
 
-  constructor(id: number, name: string, phone: string, address: Address, image?: string) {
+  constructor(
+    id: number,
+    name: string,
+    lastname: string,
+    phone: string,
+    address: Address,
+    image?: string
+  ) {
     this.id = id;
     this.name = name;
+    this.lastname = lastname;
     this.phone = phone;
     this.address = address;
     this.image = image;
@@ -67,6 +74,14 @@ export class Person {
 
   set name(value: string) {
     this.name = value;
+  }
+
+  get lastname(): string {
+    return this.lastname;
+  }
+
+  set lastname(value: string) {
+    this.lastname = value;
   }
 
   get phone(): string {

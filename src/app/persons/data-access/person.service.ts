@@ -9,10 +9,29 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { BudgetService } from '../../presupuesto/data-access/budget.service';
 import { Rol } from '../../class/rol';
 import { Roles } from '../../class/roles';
+import { FirePersonStorageService } from './storage.fcoll.service';
 
+/**
+ * @description
+ * Servicio que se encarga de la lógica de negocio de la entidad Person
+*
+* @class
+*
+* @property {StoragePersonService} storage - Servicio para manejar la persistencia de la entidad Person
+* @property {BudgetService} budgetService - Servicio para manejar la persistencia de la entidad Budget
+* @property {Person} person - Entidad Person actual
+* @property {Address} newAddress - Dirección nueva a crear
+* @property {Person} createdUpdatedPerson - Entidad Person creada o actualizada
+* @property {Address} newAddress - Dirección nueva a crear
+* @property {Signal<Person>} person - Señal que emite la entidad Person actual
+* @property {Signal<Person[]>} persons - Señal que emite la lista de Personas
+* @property {Signal<Person>} createdUpdatedPerson - Señal que emite la entidad Person creada o actualizada
+* @property {Signal<Address>} newAddress - Señal que emite la dirección nueva a crear
+**/
 @Injectable({ providedIn: 'root' })
 export class PersonService {
   storage = inject(StoragePersonService);
+  /* torageF = inject(FirePersonStorageService); */
   budgetService = inject(BudgetService);
 
   persons!: Signal<Person[] | undefined>;
@@ -41,6 +60,7 @@ export class PersonService {
       email: '',
       password: '',
       name: '',
+      lastname: '',
       phone: '',
       address: this.newAddress,
       image: '',
@@ -69,6 +89,11 @@ export class PersonService {
     return this.person;
   }
 
+  // Firestore Database
+  /* getPersons(): Observable<DocumentChangeAction<Person>[]> {
+      return this.storageF.getUsers();
+  } */
+
   getPersons(): Observable<Person[]> {
     return this.storage.getPersonsStorage();
   }
@@ -77,7 +102,7 @@ export class PersonService {
     return this.storage.getPersonStorage(id);
   }
 
-  addPerson(person: any): Observable<Person> {
+  addPerson(person: Person): Observable<Person> {
     let personArray: Array<Person> = new Array<Person>();
     if (this.persons()) {
       this.persons()?.push(this.createUpdatePerson(person));
@@ -100,7 +125,7 @@ export class PersonService {
     return index !== -1;
   }
 
-  updatePerson(id: number, person: any): Observable<Person> {
+  updatePerson(id: number, person: Person): Observable<Person> {
     let index = this.persons()?.findIndex((item) => item.id === id);
     if (index !== -1) {
       this.persons()![index!] = this.createUpdatePerson(person);
@@ -119,7 +144,7 @@ export class PersonService {
     return of(person);
   }
 
-  createUpdatePerson(person: any): any {
+  createUpdatePerson(person: any): Person {
     this.createPerson();
 
     this.newAddress.street = person.street ?? person.address.street;
@@ -134,6 +159,7 @@ export class PersonService {
 
     this.createdUpdatedPerson.id = person.id;
     this.createdUpdatedPerson.name = person.name;
+    this.createdUpdatedPerson.lastname = person.lastname;
     this.createdUpdatedPerson.phone = person.phone;
     this.createdUpdatedPerson.email = person.email;
     this.createdUpdatedPerson.password = person.password;

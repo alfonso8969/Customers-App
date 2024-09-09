@@ -6,7 +6,7 @@ import { ButtonComponent } from '../../../shared/ui/button/button.component';
   standalone: true,
   imports: [ButtonComponent],
   templateUrl: './sign-up.component.html',
-  styleUrls: ['./sign-up.component.css']
+  styleUrls: ['../log-in/log-in.component.css']
 })
 export class SignUpComponent implements OnInit {
 

@@ -1,13 +1,10 @@
-import { BudgetService } from './../../data-access/budget.service';
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { BudgetService } from './../../data-access/budget.service';
 import { Budget } from '../../../class/budget.model';
 import { Spent } from '../../../class/gasto.model';
-import { CommonModule } from '@angular/common';
-import { InputTextModule } from 'primeng/inputtext';
-import { StorageBudgetService } from '../../data-access/storage.service';
-import { ButtonModule } from 'primeng/button';
 import Swal from 'sweetalert2';
-import { NgxPaginationModule } from 'ngx-pagination';
 
 
 @Component({
@@ -15,7 +12,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
   standalone: true,
   templateUrl: './gasto.component.html',
   styleUrl: './gasto.component.css',
-  imports: [CommonModule, InputTextModule, ButtonModule, NgxPaginationModule]
+  imports: [CommonModule, NgxPaginationModule]
 })
 export class GastoComponent implements OnInit {
 

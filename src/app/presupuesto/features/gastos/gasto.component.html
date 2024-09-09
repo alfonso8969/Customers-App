@@ -1,6 +1,6 @@
 <div class="gasto">
   <h2 class="gasto_titulo">Gastos</h2>
-  <div *ngFor="let spent of expenses.reverse() | paginate: { id: 'spent', itemsPerPage: 4, currentPage: p }" class="elemento limpiarEstilos">
+  <div *ngFor="let spent of expenses.reverse() | paginate: { id: 'spent', itemsPerPage: 4, currentPage: p, totalItems: expenses.length }" class="elemento limpiarEstilos">
     <div class="elemento_descripcion">{{ spent.date | date: 'shortDate' }} - {{ spent.description }} </div>
     <div class="right limpiarEstilos">
       <div class="elemento_valor">- {{ spent.quantity | currency : 'EUR': 'symbol' : '1.2-2' }}</div>
@@ -11,7 +11,7 @@
                   showDelay="1000"
                   hideDelay="300"
                   ><i class="fa fa-times-circle"></i>Delete</p-button> -->
-        <button class="elemento_eliminar--btn" (click)="deleteRecord(spent)">
+        <button type="button" title="Delete" class="elemento_eliminar--btn" (click)="deleteRecord(spent)">
           <i class="fa fa-times-circle"></i>
         </button>
       </div>

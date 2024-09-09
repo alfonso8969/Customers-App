@@ -9,9 +9,9 @@
 
       </div>
       <div class="col-8 col-sm-8 address">
-        <a href="/persons" class="btn btn-primary f-right back">Back</a>
+        <a [routerLink]="'/persons'" class="btn btn-primary f-right back">Back</a>
         <div class="card-body">
-          <h5 class="card-title"><span class="fa fa-user">  {{ person?.name }}</span></h5>
+          <h5 class="card-title"><span class="fa fa-user">  {{ person?.name }}{{ person?.lastname }}</span></h5>
           <span class="fa fa-phone"><span class="card-text p-2">{{ person?.phone }}</span></span><p></p>
           <div class="form-group">
             <label for="text-address">Address</label>

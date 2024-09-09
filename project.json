@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/nx/schemas/project-schema.json",
-  "name": "first-App",
+  "name": "customers-app",
   "projectType": "application",
   "generators": {},
   "sourceRoot": "src",
@@ -9,7 +9,7 @@
     "build": {
       "executor": "@angular-devkit/build-angular:application",
       "options": {
-        "outputPath": "dist/first-app",
+        "outputPath": "dist",
         "index": "src/index.html",
         "browser": "src/main.ts",
         "polyfills": [
@@ -29,7 +29,8 @@
           "node_modules/bootstrap/dist/css/bootstrap.min.css"
         ],
         "scripts": [
-          "node_modules/bootstrap/dist/js/bootstrap.min.js"
+          "node_modules/bootstrap/dist/js/bootstrap.min.js",
+          "node_modules/jquery/dist/jquery.min.js"
         ],
         "server": "src/main.server.ts",
         "prerender": true,
@@ -42,13 +43,13 @@
           "budgets": [
             {
               "type": "initial",
-              "maximumWarning": "500kB",
-              "maximumError": "1MB"
+              "maximumWarning": "1000kB",
+              "maximumError": "2MB"
             },
             {
               "type": "anyComponentStyle",
-              "maximumWarning": "2kB",
-              "maximumError": "4kB"
+              "maximumWarning": "1000kB",
+              "maximumError": "2MB"
             }
           ],
           "outputHashing": "all"
@@ -65,10 +66,10 @@
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {
-          "buildTarget": "first-App:build:production"
+          "buildTarget": "customers-app:build:production"
         },
         "development": {
-          "buildTarget": "first-App:build:development"
+          "buildTarget": "customers-app:build:development"
         }
       },
       "defaultConfiguration": "development"

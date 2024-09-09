@@ -1,4 +1,4 @@
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router, RouterModule } from '@angular/router';
 import { Component, inject, OnInit, Signal } from '@angular/core';
 import { Person, PersonService } from '../../data-access/person.service';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -12,7 +12,7 @@ import { BudgetService } from '../../../presupuesto/data-access/budget.service';
 @Component({
   selector: 'app-person',
   standalone: true,
-  imports: [JsonPipe, UpperCasePipe],
+  imports: [JsonPipe, UpperCasePipe, RouterModule],
   templateUrl: './person.component.html',
   styleUrls: ['./person.component.css']
 })
@@ -82,7 +82,7 @@ export class PersonComponent implements OnInit {
 
             this.budgetService.addBudget(budget).subscribe(b => {
               if(b.budgetId) {
-                this.personService.updatePerson(this.person?.id!, this.person)
+                this.personService.updatePerson(this.person?.id!, this.person!)
                  .subscribe(p => {
                     if (p) {
                       Swal.fire(
@@ -122,7 +122,7 @@ export class PersonComponent implements OnInit {
         personId: this.person?.id
       }
     };
-    this.router.navigate(['/budgets/presupuesto'], navigationExtras);
+    this.router.navigate(['/budgets/budget'], navigationExtras);
   }
 
   delete(id: number | undefined) {

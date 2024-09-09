@@ -18,14 +18,14 @@ export class Budget {
 
   calculateTotalIncome(): void {
     this.totalIncomes = this.incomes?.reduce(
-      (acc, curr) => acc + curr.quantity,
+      (sum, income) => sum + income.quantity,
       0
     );
   }
 
   calculateTotalExpenses() :void {
     this.totalExpenses = this.expenses?.reduce(
-      (acc, curr) => acc + curr.quantity,
+      (sum, spent) => sum + spent.quantity,
       0
     );
   }

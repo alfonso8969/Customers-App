@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Income } from '../../../class/ingreso.model';
-import { BudgetService } from '../../data-access/budget.service';
 import { CommonModule } from '@angular/common';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { BudgetService } from '../../data-access/budget.service';
 import { Budget } from '../../../class/budget.model';
+import { Income } from '../../../class/ingreso.model';
 import * as ls from 'local-storage';
 import Swal from 'sweetalert2';
-import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
   selector: 'app-ingreso',
@@ -16,7 +16,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 })
 export class IngresoComponent implements OnInit {
 
-  p: number = 1;
+  p1: number = 1;
   incomes: Income[] = [];
   budget!: Budget | undefined;
   budgetId!: string;

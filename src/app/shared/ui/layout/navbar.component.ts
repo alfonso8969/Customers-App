@@ -9,7 +9,7 @@ import { Router, RouterModule } from '@angular/router';
   selector: 'app-navbar',
   standalone: true,
   template: `
-    <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div class="container-fluid">
         <a class="navbar-brand">Customers</a>
         <button
@@ -26,41 +26,53 @@ import { Router, RouterModule } from '@angular/router';
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="/dashboard">Home</a>
+              <a
+                class="nav-link active"
+                aria-current="page"
+                [routerLink]="'/dashboard'"
+                >Home</a
+              >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/persons">Customers</a>
+              <a class="nav-link" [routerLink]="'/persons'">Customers</a>
             </li>
           </ul>
           <form class="form-inline my-2 my-lg-0">
             <div *ngIf="loginService.isAuthenticated(); else loginTemplate">
-              <button class="btn btn-outline-success p-2 mx-2" (click)="logout()">
+              <button
+                class="btn btn-outline-success p-2 mx-2"
+                (click)="logout()"
+              >
                 logout
               </button>
 
-              <span
+              <span class="text-light"
                 >{{
                   customer
-                    ? 'Welcome ' + customer.name.split(' ')[0] +
+                    ? 'Welcome ' +
+                      customer.name.split(' ')[0] +
                       ' ' +
                       customer.name.split(' ')[1]
-                    : ''
+                    : 'Usuario no iniciado'
                 }}
                 &nbsp;&nbsp;</span
               >
 
               <img
                 class="img-thumbnail rounded-circle"
-                width= 50px  height= 50px
+                width="50px"
+                height="50px"
                 src="{{
-                  customer
-                    ? customer.image
-                    : '../../../assets/images/user.jpg'
+                  customer ? customer.image : '../../../assets/images/user.jpg'
                 }}"
               />
             </div>
             <ng-template #loginTemplate>
-              <a [routerLink]="['/auth/login']" routerLinkActive="router-link-active" class="btn btn-outline-success">
+              <a
+                [routerLink]="['/auth/login']"
+                routerLinkActive="router-link-active"
+                class="btn btn-outline-success"
+              >
                 Login
               </a>
             </ng-template>
@@ -80,7 +92,7 @@ export default class NavbarComponent {
 
   constructor() {
     if (this.loginService.isAuthenticated()) {
-      this.customer = this.personService.getLocalPerson();
+      this.customer = JSON.parse(sessionStorage.getItem('userLogged')!);
     }
   }
 
