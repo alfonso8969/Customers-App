@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { PrimeNGConfig } from 'primeng/api';
-import firebase from 'firebase/compat/app';
 import { LoginService } from './auth/data-access/login.service';
 
 @Component({
@@ -16,16 +15,11 @@ export class AppComponent implements OnInit {
 
   // PrimeNG configuration provider to enable ripple effect globally.
   constructor(
-    private primengConfig: PrimeNGConfig,
-    private loginService: LoginService
+    private primengConfig: PrimeNGConfig
   ) {}
 
   ngOnInit(): void {
     this.primengConfig.ripple = true;
-    firebase.initializeApp({
-      apiKey: 'AIzaSyBJIimmC1C5FCmoJSjuf7C_hrazHEaVujo',
-      authDomain: 'customers-987c4.firebaseapp.com',
-    });
-    this.loginService.onIdTokenRevoked();
+
   }
 }

@@ -37,7 +37,7 @@ export class CabeceroComponent implements OnInit {
     if (navigation?.extras.queryParams) {
       this.budgetId = navigation?.extras.queryParams['budgetId'];
       this.personId = navigation?.extras.queryParams['personId'];
-      this.person = toSignal(this.personService.getPerson(Number(this.personId)));
+      this.person = toSignal(this.personService.getPerson(this.personId));
       this.budgetService.getBudget(Number(this.budgetId))
         .subscribe(budget => {
           this.budget = budget!;

@@ -1,4 +1,5 @@
 export interface Address {
+    idDB?: string;
     id?: number;
     street: string;
     zipcode: string;

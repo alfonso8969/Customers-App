@@ -7,6 +7,7 @@ export class Person {
   private _email?: string | undefined;
   private _password?: string | undefined;
   private _rol?: Rol | undefined;
+  private _idDB?: string | undefined;
 
   constructor(
     id: number,
@@ -26,6 +27,13 @@ export class Person {
 
   static fromJson(json: any): Person {
     return new Person(json.id, json.name, json.phone, json.address, json.image);
+  }
+
+  public get idDB(): string | undefined {
+    return this._idDB;
+  }
+  public set idDB(value: string | undefined) {
+    this._idDB = value;
   }
 
   public get rol(): Rol | undefined {

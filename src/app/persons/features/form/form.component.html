@@ -5,7 +5,7 @@
       <h1 class="header new-amsterdam-regular f-left">Editando: {{ person?.name }}</h1>
     </ng-template>
     <a *ngIf="!edit" href="/persons" class="btn btn-primary f-right mt-2">Back</a>
-    <a *ngIf="edit" href="/persons/person/{{ person?.id }}" class="btn btn-primary f-right mt-2">Back</a>
+    <a *ngIf="edit" href="/persons/person/{{ person?.idDB }}" class="btn btn-primary f-right mt-2">Back</a>
   </div>
   <div class="card-body form-group">
     <form [formGroup]="personForm" (ngSubmit)="onSubmit()">
@@ -131,8 +131,8 @@
               </div>
             </div>
             <div class="col-4 col-sm-4">
-              <label for="state">State</label>
-              <input id="state" formControlName="region" type="text" class="form-control w-75">
+              <label for="region">Region</label>
+              <input id="region" formControlName="region" type="text" class="form-control w-75">
               <div
                 *ngIf="formControls['region'].invalid && (formControls['region'].dirty || formControls['region'].touched)">
                 <div class="text-error" *ngIf="formControls['region'].errors?.['required']">Region is required.</div>

@@ -75,6 +75,13 @@ import { Router, RouterModule } from '@angular/router';
               >
                 Login
               </a>
+              <span class="text-light p-2">Usuario no iniciado &nbsp;&nbsp;</span>
+              <img
+                class="img-thumbnail rounded-circle"
+                width="50px"
+                height="50px"
+                src="../../../assets/images/user.jpg"
+              />
             </ng-template>
           </form>
         </div>

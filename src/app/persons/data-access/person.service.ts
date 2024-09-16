@@ -1,4 +1,3 @@
-import { Budget } from '../../class/budget.model';
 import { Injectable, Signal, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Person } from '../../class/person';
@@ -28,10 +27,10 @@ import { FirePersonStorageService } from './storage.fcoll.service';
 * @property {Signal<Person>} createdUpdatedPerson - Señal que emite la entidad Person creada o actualizada
 * @property {Signal<Address>} newAddress - Señal que emite la dirección nueva a crear
 **/
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class PersonService {
   storage = inject(StoragePersonService);
-  /* torageF = inject(FirePersonStorageService); */
+  storageF = inject(FirePersonStorageService);
   budgetService = inject(BudgetService);
 
   persons!: Signal<Person[] | undefined>;
@@ -47,6 +46,7 @@ export class PersonService {
 
   createPerson() {
     this.newAddress = {
+      id: 0,
       street: '',
       zipcode: '',
       city: '',
@@ -55,6 +55,7 @@ export class PersonService {
     };
 
     this.createdUpdatedPerson = {
+      idDB: '',
       budgetId: 0,
       id: 0,
       email: '',
@@ -95,28 +96,29 @@ export class PersonService {
   } */
 
   getPersons(): Observable<Person[]> {
-    return this.storage.getPersonsStorage();
+    return this.storageF.getCustomers();
   }
 
-  getPerson(id: number): Observable<Person | undefined> {
-    return this.storage.getPersonStorage(id);
+  getPerson(id: string): Observable<Person | undefined> {
+    return this.storageF.getCustomerById(id);
   }
+
+  getAddress(id: string): Observable<Address | undefined> {
+    return this.storageF.getAddressById(id);
+  }
+
 
   addPerson(person: Person): Observable<Person> {
-    let personArray: Array<Person> = new Array<Person>();
-    if (this.persons()) {
-      this.persons()?.push(this.createUpdatePerson(person));
-    } else {
-      personArray.push(this.createUpdatePerson(person));
-    }
-    this.storage.storagePersons(this.persons() ?? personArray);
-    return of(person);
+    this.person = this.createUpdatePerson(person);
+    this.storageF.addCustomer(this.person);
+
+    return of(this.person);
   }
 
-  deletePerson(id: number | undefined): boolean {
-    let budgetId = this.persons()?.find((item) => item.id === id)?.budgetId;
+  deletePerson(id: string | undefined): boolean {
+    let budgetId = this.persons()?.find((item) => item.id === Number(id))?.budgetId;
     this.budgetService.deleteBudget(budgetId ?? 0);
-    let index = this.persons()?.findIndex((item) => item.id === id);
+    let index = this.persons()?.findIndex((item) => item.id === Number(id));
     if (index !== -1) {
       // Remove the item at the found index
       this.persons()?.splice(index!, 1);
@@ -147,6 +149,7 @@ export class PersonService {
   createUpdatePerson(person: any): Person {
     this.createPerson();
 
+    this.newAddress.id = person.id;
     this.newAddress.street = person.street ?? person.address.street;
     this.newAddress.zipcode = person.zipcode ?? person.address.zipcode;
     this.newAddress.city = person.city ?? person.address.city;
@@ -157,6 +160,7 @@ export class PersonService {
       this.createdUpdatedPerson.budgetId = person.budgetId;
     }
 
+    this.createdUpdatedPerson.idDB = person.idDB;
     this.createdUpdatedPerson.id = person.id;
     this.createdUpdatedPerson.name = person.name;
     this.createdUpdatedPerson.lastname = person.lastname;

@@ -1,7 +1,13 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, inject, OnInit, Signal } from '@angular/core';
 import { Person, PersonService } from '../../data-access/person.service';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule, JsonPipe } from '@angular/common';
 import Swal from 'sweetalert2';
 import $ from 'jquery';
@@ -59,7 +65,7 @@ export class FormComponent implements OnInit {
     });
 
     if (this.checkId(this.id)) {
-      this.personService.getPerson(Number(this.id)).subscribe({
+      this.personService.getPerson(this.id!).subscribe({
         next: (person) => {
           this.person = person;
           this.edit = true;
@@ -68,12 +74,22 @@ export class FormComponent implements OnInit {
           this.formControls['phone'].setValue(this.person?.phone);
           this.formControls['email'].setValue(this.person?.email);
           this.formControls['password'].setValue(this.person?.password);
-          this.formControls['street'].setValue(this.person?.address.street);
-          this.formControls['zipcode'].setValue(this.person?.address.zipcode);
-          this.formControls['city'].setValue(this.person?.address.city);
-          this.formControls['region'].setValue(this.person?.address.region);
-          this.formControls['country'].setValue(this.person?.address.country);
-          this.formControls['image'].setValue(this.person?.image);
+          this.personService
+            .getAddress(String(this.person?.id!))
+            .subscribe((address) => {
+              this.person!.address = address!;
+
+              this.formControls['street'].setValue(this.person?.address.street);
+              this.formControls['zipcode'].setValue(
+                this.person?.address.zipcode
+              );
+              this.formControls['city'].setValue(this.person?.address.city);
+              this.formControls['region'].setValue(this.person?.address.region);
+              this.formControls['country'].setValue(
+                this.person?.address.country
+              );
+              this.formControls['image'].setValue(this.person?.image);
+            });
         },
         error: (error) => {
           console.error('Error fetching person:', error);

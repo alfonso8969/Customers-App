@@ -40,8 +40,8 @@ export class StoragePersonService {
       });
   }
 
-  deletePersonStorage(id: number | undefined): Subscription {
-    let index: number | string = id! - 1;
+  deletePersonStorage(id: number | string | undefined): Subscription {
+    let index: number = Number(id!) - 1;
     let url: string =
       this.url + this.endPointDelUp + index + '.json';
     return this.httpClient

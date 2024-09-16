@@ -13,15 +13,14 @@ import { Rol } from '../../../class/rol';
   standalone: true,
   imports: [PersonCardComponent, CommonModule, RouterModule],
   templateUrl: './persons.component.html',
-  styleUrls: ['./persons.component.css']
+  styleUrls: ['./persons.component.css'],
 })
-
 export class PersonsComponent {
   router = inject(Router);
 
-  personService = inject(PersonService)
-  storagePersonService = inject(StoragePersonService)
-  storageBudgetService = inject(StorageBudgetService)
+  personService = inject(PersonService);
+  storagePersonService = inject(StoragePersonService);
+  storageBudgetService = inject(StorageBudgetService);
 
   persons!: Signal<Person[] | undefined>;
   roleAs: string | Rol | undefined = '';
@@ -29,26 +28,30 @@ export class PersonsComponent {
   constructor() {
     this.storageBudgetService.deleteStorageLocalBudget();
 
-    // Firebase
- /*    this.personService.getPersons().subscribe((persons) => {
-      this.persons = persons.map((action) => {
-        return {
-          ...action.payload.doc.data(),
-          id: action.payload.doc.id,
-        } as unknown as Person;
-      });
-    }); */
-
     this.persons = toSignal(this.personService.getPersons());
     this.roleAs =
       typeof this.personService.getUserLogged().rol === 'string'
         ? this.personService.getUserLogged().rol
-        : this.personService.getUserLogged().rol?.type;
+        : Number(this.personService.getUserLogged().rol?.type) == 1
+        ? 'admin'
+        : 'user';
+  }
+
+  getSaldoTotal() {
+    let saldoTotal: number = 0;
+    if (this.persons()) {
+      this.persons()?.forEach((cliente) => {
+        if (cliente.budgetId !== undefined) {
+          saldoTotal += 125.14;
+        }
+      });
+    }
+    return saldoTotal;
   }
 
   view(person: Person) {
-    console.log("The person: ", person)<
+    console.log('The person: ', person);
     this.storagePersonService.storageLocalPerson(person);
-    this.router.navigate(['/persons/person/', person.id]);
+    this.router.navigate(['/persons/person/', person.idDB]);
   }
 }

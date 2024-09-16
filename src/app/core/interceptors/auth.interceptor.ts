@@ -19,7 +19,7 @@ export const authInterceptor: HttpInterceptorFn = (
   // Clone the request to add the authentication header.
   const newReq = request.clone({
     headers: request.headers.set('Authorization', 'Bearer ' + authToken),
-    url: request.url + '?auth=' + authToken,
+    url: (authToken != '' && request.url + '?auth=' + authToken) || request.url,
   });
   console.log("object authInterceptor: ", newReq);
   // Pass the cloned request to the next handler.

@@ -1,4 +1,3 @@
-
 <div class="container background mt-6">
   <div class="text-center pt-4">
     <h1>
@@ -9,11 +8,33 @@
 
   </div>
   <div class="row">
-  @for(person of persons(); track person) {
+    <div class="col-md-9">
+      @for(person of persons(); track person) {
       <div class="col-4 col-lg-4">
-      <app-person-card [person]="person" (view)="view($event)" />
-    </div>
-  }
-</div>
+        <app-person-card [person]="person" (view)="view($event)" />
+      </div>
+      }
 
+    </div>
+    <!-- Inicio tarjetas laterales -->
+    <div class="col-md-3">
+      <div class="card text-center bg-danger text-white mb-3">
+        <div class="card-body">
+          <h3>Saldo Total</h3>
+          <h4 class="display-4">
+            {{ getSaldoTotal() | currency:'EU':'€' }}
+          </h4>
+        </div>
+      </div>
+      <div class="card text-center bg-success text-white mb-3">
+        <div class="card-body">
+          <h3>Total Clientes</h3>
+          <h4 class="display-4">
+            <i class="fas fa-users"></i> {{ persons()?.length }}
+          </h4>
+        </div>
+      </div>
+    </div>
+    <!-- Fin tarjetas laterales -->
+  </div>
 </div>
